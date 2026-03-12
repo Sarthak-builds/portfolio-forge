@@ -4,19 +4,21 @@ import { X, Heart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface RatingActionsProps {
-    onSwipeLeft: () => void;
-    onSwipeRight: () => void;
+    onDismiss: () => void;
+    onLike: () => void;
     onRate: (score: number) => void;
+    isPending?: boolean;
 }
 
-export function RatingActions({ onSwipeLeft, onSwipeRight, onRate }: RatingActionsProps) {
+export function RatingActions({ onDismiss, onLike, onRate, isPending }: RatingActionsProps) {
     return (
         <div className="flex justify-center items-center gap-6 mt-8">
             <Button
                 variant="outline"
                 size="icon"
+                disabled={isPending}
                 className="h-14 w-14 rounded-full border-2 border-red-500/20 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-500 transition-all shadow-sm"
-                onClick={onSwipeLeft}
+                onClick={onDismiss}
             >
                 <X className="h-6 w-6" />
             </Button>
@@ -26,8 +28,10 @@ export function RatingActions({ onSwipeLeft, onSwipeRight, onRate }: RatingActio
                     {[1, 2, 3, 4, 5].map((star) => (
                         <Star
                             key={star}
-                            onClick={() => onRate(star)}
-                            className="h-5 w-5 text-zinc-300 hover:text-amber-400 cursor-pointer transition-colors"
+                            onClick={() => !isPending && onRate(star)}
+                            className={`h-5 w-5 transition-colors cursor-pointer ${
+                                isPending ? "text-zinc-200" : "text-zinc-300 hover:text-amber-400"
+                            }`}
                         />
                     ))}
                 </div>
@@ -36,8 +40,9 @@ export function RatingActions({ onSwipeLeft, onSwipeRight, onRate }: RatingActio
             <Button
                 variant="outline"
                 size="icon"
+                disabled={isPending}
                 className="h-14 w-14 rounded-full border-2 border-emerald-500/20 text-emerald-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-500 transition-all shadow-sm"
-                onClick={onSwipeRight}
+                onClick={onLike}
             >
                 <Heart className="h-6 w-6" />
             </Button>
