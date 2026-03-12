@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ExternalLink } from "lucide-react";
+import { LeaderboardEntry, RANK_STYLES } from "@/features/leaderboard/lib/types";
+import { formatScore, normalizeUrl } from "@/features/leaderboard/utils";
 
 interface LeaderboardTableProps {
-    entries: any[];
+    entries: LeaderboardEntry[];
 }
 
 export function LeaderboardTable({ entries }: LeaderboardTableProps) {
@@ -41,15 +43,13 @@ export function LeaderboardTable({ entries }: LeaderboardTableProps) {
                                 </TableCell>
                             </TableRow>
                         )}
-                        {entries.map((portfolio: any, index: number) => {
+                        {entries.map((portfolio, index) => {
                             const rank = index + 1;
+                            const rankStyle = RANK_STYLES[rank] ?? 'text-zinc-500';
                             return (
                                 <TableRow key={portfolio.id} className={rank <= 3 ? "bg-zinc-50" : ""}>
                                     <TableCell className="text-center font-medium">
-                                        {rank === 1 && <span className="text-amber-500 font-bold text-lg">1</span>}
-                                        {rank === 2 && <span className="text-zinc-400 font-bold text-lg">2</span>}
-                                        {rank === 3 && <span className="text-amber-700 font-bold text-lg">3</span>}
-                                        {rank > 3 && <span className="text-zinc-500">{rank}</span>}
+                                        <span className={rankStyle}>{rank}</span>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-3">
@@ -64,16 +64,18 @@ export function LeaderboardTable({ entries }: LeaderboardTableProps) {
                                     </TableCell>
                                     <TableCell className="hidden md:table-cell">
                                         <div className="flex gap-1 flex-wrap">
-                                            {(portfolio.tech_stack || []).slice(0, 3).map((tech: string, i: number) => (
-                                                <Badge key={i} variant="secondary" className="bg-zinc-100 text-[10px] text-zinc-600 font-normal">{tech}</Badge>
+                                            {(portfolio.tech_stack || []).slice(0, 3).map((tech, i) => (
+                                                <Badge key={i} variant="secondary" className="bg-zinc-100 text-[10px] text-zinc-600 font-normal">
+                                                    {tech}
+                                                </Badge>
                                             ))}
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right font-mono font-medium">
-                                        {portfolio.score ? portfolio.score.toFixed(1) : "0.0"}
+                                        {formatScore(portfolio.score)}
                                     </TableCell>
                                     <TableCell>
-                                        <a href={portfolio.url?.startsWith('http') ? portfolio.url : `https://${portfolio.url}`} target="_blank" rel="noreferrer">
+                                        <a href={normalizeUrl(portfolio.url)} target="_blank" rel="noreferrer">
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 hover:text-zinc-900">
                                                 <ExternalLink className="h-4 w-4" />
                                             </Button>
