@@ -1,27 +1,56 @@
 "use client";
 
-import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Eye, Star, TrendingUp, Github, Link as LinkIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { useApi } from "@/features/api/use-api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { StatsOverview } from "@/features/portfolio/components/StatsOverview";
+import { PortfolioForm } from "@/features/portfolio/components/PortfolioForm";
 
 export default function DashboardPage() {
-    const { user } = useUser();
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { user, isLoaded } = useUser();
+    const { fetchUserPortfolios, createPortfolio } = useApi();
 
-    // Mock Form Submit Handler
-    const onSubmit = (e: React.FormEvent) => {
+    // Fetch user portfolios wrapper hook
+    const { data: portfolios, isLoading: portfoliosLoading, refetch } = useQuery({
+        queryKey: ['user-portfolios', user?.id],
+        queryFn: () => fetchUserPortfolios(user?.id as string),
+        enabled: !!user?.id,
+    });
+
+    const createPortfolioMutation = useMutation({
+        mutationFn: createPortfolio,
+        onSuccess: () => {
+            refetch(); // Reload the data on success
+        }
+    });
+
+    // Form Submit Handler
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsSubmitting(true);
-        setTimeout(() => {
-            setIsSubmitting(false);
-            // We would have a toast here usually
-        }, 1000);
+
+        const formData = new FormData(e.currentTarget);
+        const stackList = formData.get('stack')?.toString().split(',').map((s) => s.trim()).filter(Boolean) || [];
+
+        const data: any = {
+            title: formData.get('title'),
+            url: formData.get('url'),
+            github_url: formData.get('github'),
+            tech_stack: stackList,
+            description: formData.get('description'),
+        };
+
+        // Check if there is already a portfolio we are updating?
+        // Basic backend POST creates a new one. We'll stick to create as per the POST /portfolios route.
+        createPortfolioMutation.mutate(data);
     };
+
+    if (!isLoaded || portfoliosLoading) {
+        return <div className="flex h-64 items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-zinc-500" /></div>;
+    }
+
+    // Grab stats from the first portfolio if exists, else defaults
+    const currentPortfolio = portfolios && portfolios.length > 0 ? portfolios[0] : null;
 
     return (
         <div className="flex flex-col gap-8">
@@ -34,94 +63,15 @@ export default function DashboardPage() {
                 </p>
             </div>
 
-            {/* Stats Overview */}
-            <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Views</CardTitle>
-                        <Eye className="h-4 w-4 text-zinc-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">12,234</div>
-                        <p className="text-xs text-zinc-500">+19% from last month</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
-                        <Star className="h-4 w-4 text-amber-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">4.8</div>
-                        <p className="text-xs text-zinc-500">Based on 142 reviews</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Global Rank</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-emerald-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">#42</div>
-                        <p className="text-xs text-emerald-600 font-medium">▲ +5 this week</p>
-                    </CardContent>
-                </Card>
-            </div>
+            <StatsOverview portfolio={currentPortfolio} />
 
-            {/* Edit Portfolio Section */}
-            <Card className="border-zinc-200 shadow-sm">
-                <CardHeader>
-                    <CardTitle>Portfolio Settings</CardTitle>
-                    <CardDescription>
-                        Update your portfolio details to stand out in the discovery feed.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={onSubmit} className="space-y-6">
-                        <div className="space-y-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="title">Project/Portfolio Name</Label>
-                                <Input id="title" placeholder="e.g. Jane Doe - Senior Frontend Engineer" defaultValue="My Awesome Portfolio" />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="url">Portfolio URL</Label>
-                                <div className="relative">
-                                    <LinkIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-500" />
-                                    <Input id="url" type="url" placeholder="https://..." className="pl-9" defaultValue="https://myportfolio.dev" />
-                                </div>
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="github">GitHub Profile / Repo</Label>
-                                <div className="relative">
-                                    <Github className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-500" />
-                                    <Input id="github" type="url" placeholder="https://github.com/..." className="pl-9" defaultValue="https://github.com/username" />
-                                </div>
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="stack">Tech Stack (comma separated)</Label>
-                                <Input id="stack" placeholder="React, Next.js, Tailwind CSS..." defaultValue="Next.js, TypeScript, Tailwind CSS, Framer Motion" />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="description">Short Description</Label>
-                                <Textarea
-                                    id="description"
-                                    placeholder="Describe your portfolio in a few words..."
-                                    className="min-h-[100px]"
-                                    defaultValue="A minimalist, performance-focused portfolio showcasing my full-stack web development projects."
-                                />
-                            </div>
-                        </div>
-
-                        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto bg-zinc-950 text-white hover:bg-zinc-800">
-                            {isSubmitting ? "Saving changes..." : "Save Portfolio Settings"}
-                        </Button>
-                    </form>
-                </CardContent>
-            </Card>
+            <PortfolioForm 
+                portfolio={currentPortfolio}
+                onSubmit={onSubmit}
+                isPending={createPortfolioMutation.isPending}
+                isSuccess={createPortfolioMutation.isSuccess}
+                isError={createPortfolioMutation.isError}
+            />
         </div>
     );
 }

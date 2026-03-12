@@ -9,7 +9,6 @@ export default function AppLayout({
 }) {
     return (
         <div className="flex min-h-screen bg-zinc-50/50">
-            {/* Sidebar for Desktop */}
             <aside className="hidden w-64 flex-col border-r border-zinc-200 bg-white md:flex">
                 <div className="flex h-16 flex-col justify-center px-6 border-b border-zinc-100">
                     <Link href="/" className="flex items-center gap-2">
@@ -42,10 +41,7 @@ export default function AppLayout({
                     </nav>
                 </div>
             </aside>
-
-            {/* Main Content Area */}
             <div className="flex flex-1 flex-col">
-                {/* Mobile Header & Desktop Topbar */}
                 <header className="flex h-16 items-center justify-between border-b border-zinc-200 bg-white px-4 md:px-6">
                     <div className="md:hidden">
                         <Link href="/" className="flex items-center gap-2">
@@ -56,16 +52,12 @@ export default function AppLayout({
                         <UserButton />
                     </div>
                 </header>
-
-                {/* Page Content */}
                 <main className="flex-1 p-4 md:p-6 lg:p-8">
                     <div className="mx-auto max-w-5xl">
                         {children}
                     </div>
                 </main>
             </div>
-
-            {/* Mobile Bottom Navigation (Optional/Basic) */}
             <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t border-zinc-200 bg-white md:hidden">
                 <Link href="/dashboard" className="flex flex-col items-center gap-1 text-zinc-600 hover:text-zinc-950">
                     <LayoutDashboard className="h-5 w-5" />
