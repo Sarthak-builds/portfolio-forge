@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Portfolio } from '@/features/explore/lib/types';
+import { Portfolio } from '@/app/explore/lib/types';
 
 interface ExploreState {
   cards: Portfolio[];

@@ -1,28 +1,20 @@
 "use client";
 
-import { AnimatePresence, useMotionValue, useTransform } from "motion/react";
+import { AnimatePresence } from "motion/react";
+import { useSwipe } from "@/app/explore/hooks/use-swipe";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useExploreStore } from "@/store/useExploreStore";
-import { usePortfolioFeed, useRating } from "@/features/explore/lib/hooks";
-import { PortfolioCard } from "@/features/explore/components/PortfolioCard";
-import { RatingActions } from "@/features/explore/components/RatingActions";
+import { usePortfolioFeed, useRating } from "@/app/explore/hooks";
+import { PortfolioCard } from "@/app/explore/components/PortfolioCard";
+import { RatingActions } from "@/app/explore/components/RatingActions";
 
 export default function ExplorePage() {
     const cards = useExploreStore((s) => s.cards);
 
     const { isLoading, refetch } = usePortfolioFeed();
     const { rate, dismiss, isPending } = useRating();
-
-    // Swipe motion values — attached to the top card only
-    const x = useMotionValue(0);
-    const rotate = useTransform(x, [-200, 200], [-18, 18]);
-    const opacity = useTransform(x, [-200, -150, 0, 150, 200], [0, 1, 1, 1, 0]);
-
-    const handleDragEnd = (_event: any, info: any) => {
-        if (info.offset.x > 100) dismiss();
-        else if (info.offset.x < -100) dismiss();
-    };
+    const { x, rotate, opacity, handleDragEnd } = useSwipe(dismiss);
 
     const topCard = cards[0];
 

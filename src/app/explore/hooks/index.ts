@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useApi } from '@/features/api/use-api';
+import { useApi } from '@/lib/api/use-api';
 import { useExploreStore } from '@/store/useExploreStore';
-import { assignCardColors } from '@/features/explore/utils';
-import { Portfolio } from '@/features/explore/lib/types';
+import { assignCardColors } from '@/app/explore/lib/utils';
+import { Portfolio } from '@/app/explore/lib/types';
 
 /**
  * Manages fetching the portfolio feed and loading it into the Zustand store.

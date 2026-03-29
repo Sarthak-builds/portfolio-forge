@@ -7,8 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Github, Link as LinkIcon } from "lucide-react";
 
+import { DashboardPortfolio } from "@/app/dashboard/lib/types";
+
 interface PortfolioFormProps {
-    portfolio: any | null; // Make it strict when type is available
+    portfolio: DashboardPortfolio | null;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
     isPending: boolean;
     isSuccess: boolean;

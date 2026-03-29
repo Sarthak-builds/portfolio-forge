@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ExternalLink } from "lucide-react";
-import { LeaderboardEntry, RANK_STYLES } from "@/features/leaderboard/lib/types";
-import { formatScore, normalizeUrl } from "@/features/leaderboard/utils";
+import { LeaderboardEntry, RANK_STYLES } from "@/app/leaderboard/lib/types";
+import { formatScore, normalizeUrl } from "@/app/leaderboard/lib/utils";
 
 interface LeaderboardTableProps {
     entries: LeaderboardEntry[];

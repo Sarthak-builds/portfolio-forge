@@ -1,9 +1,9 @@
 "use client";
 
 import { Trophy, Loader2 } from "lucide-react";
-import { useLeaderboard } from "@/features/leaderboard/lib/hooks";
+import { useLeaderboard } from "@/app/leaderboard/hooks";
 import { useLeaderboardStore } from "@/store/useLeaderboardStore";
-import { LeaderboardTable } from "@/features/leaderboard/components/LeaderboardTable";
+import { LeaderboardTable } from "@/app/leaderboard/components/LeaderboardTable";
 
 export default function LeaderboardPage() {
     const activeFilter = useLeaderboardStore((s) => s.activeFilter);

@@ -1,56 +1,23 @@
 "use client";
 
-import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { Loader2 } from "lucide-react";
-import { useApi } from "@/features/api/use-api";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { StatsOverview } from "@/features/portfolio/components/StatsOverview";
-import { PortfolioForm } from "@/features/portfolio/components/PortfolioForm";
+import { StatsOverview } from "@/app/dashboard/components/StatsOverview";
+import { PortfolioForm } from "@/app/dashboard/components/PortfolioForm";
+import { useDashboard } from "@/app/dashboard/hooks/use-dashboard";
 
 export default function DashboardPage() {
-    const { user, isLoading: isLoaded } = useAuthStore();
-    const { fetchUserPortfolios, createPortfolio } = useApi();
-
-    // Fetch user portfolios wrapper hook
-    const { data: portfolios, isLoading: portfoliosLoading, refetch } = useQuery({
-        queryKey: ['user-portfolios', user?.id],
-        queryFn: () => fetchUserPortfolios(user?.id as string),
-        enabled: !!user?.id,
-    });
-
-    const createPortfolioMutation = useMutation({
-        mutationFn: createPortfolio,
-        onSuccess: () => {
-            refetch(); // Reload the data on success
-        }
-    });
-
-    // Form Submit Handler
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.currentTarget);
-        const stackList = formData.get('stack')?.toString().split(',').map((s) => s.trim()).filter(Boolean) || [];
-
-        const data: any = {
-            title: formData.get('title'),
-            url: formData.get('url'),
-            github_url: formData.get('github'),
-            tech_stack: stackList,
-            description: formData.get('description'),
-        };
-
-        // Check if there is already a portfolio we are updating?
-        // Basic backend POST creates a new one. We'll stick to create as per the POST /portfolios route.
-        createPortfolioMutation.mutate(data);
-    };
+    const {
+        user,
+        isLoaded,
+        portfoliosLoading,
+        currentPortfolio,
+        onSubmit,
+        createPortfolioMutation
+    } = useDashboard();
 
     if (!isLoaded || portfoliosLoading) {
         return <div className="flex h-64 items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-zinc-500" /></div>;
     }
-
-    // Grab stats from the first portfolio if exists, else defaults
-    const currentPortfolio = portfolios && portfolios.length > 0 ? portfolios[0] : null;
 
     return (
         <div className="flex flex-col gap-8">

@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, Star, TrendingUp } from "lucide-react";
 
+import { DashboardPortfolio } from "@/app/dashboard/lib/types";
+
 interface StatsOverviewProps {
-  portfolio: any | null; // Tip: Update 'any' when portfolio interface is created
+  portfolio: DashboardPortfolio | null;
 }
 
 export function StatsOverview({ portfolio }: StatsOverviewProps) {

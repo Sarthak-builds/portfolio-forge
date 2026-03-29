@@ -4,8 +4,8 @@ import { motion, MotionValue } from "motion/react";
 import { ExternalLink } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Portfolio } from "@/features/explore/lib/types";
-import { getHostname } from "@/features/explore/utils";
+import { Portfolio } from "@/app/explore/lib/types";
+import { getHostname } from "@/app/explore/lib/utils";
 
 interface PortfolioCardProps {
     card: Portfolio & { color: string };

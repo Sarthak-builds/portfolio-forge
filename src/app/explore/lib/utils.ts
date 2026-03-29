@@ -1,4 +1,4 @@
-import { CARD_COLORS } from '@/features/explore/lib/types';
+import { CARD_COLORS } from './types';
 
 /**
  * Assigns a deterministic color from CARD_COLORS to each portfolio

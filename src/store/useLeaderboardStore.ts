@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { LeaderboardEntry, LeaderboardFilter } from '@/features/leaderboard/lib/types';
+import { LeaderboardEntry, LeaderboardFilter } from '@/app/leaderboard/lib/types';
 
 interface LeaderboardState {
   entries: LeaderboardEntry[];
