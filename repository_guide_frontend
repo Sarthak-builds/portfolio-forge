@@ -1,0 +1,134 @@
+# Portfolio Forge: Comprehensive Repository Guide
+
+This guide covers everything you need to know about the **Portfolio Forge** repository, including its technology stack, folder structure, core features, and a step-by-step guide to building it from scratch.
+
+---
+
+## 🏗️ 1. Project Overview & Features
+**Portfolio Forge** is a "Gamified Ecosystem for Creative Professionals." It allows users to showcase their portfolios, discover others through a swipe-based discovery feed, leave ratings, and climb a global leaderboard based on engagement.
+
+**Core Features (Domains):**
+- **Auth (`/sign-in`, `/sign-up`)**: User authentication and session management.
+- **Portfolio**: Users can create/edit their portfolio (`PortfolioForm`) and view their engagement statistics (`StatsOverview`).
+- **Explore**: A dynamic feed where users can discover other portfolios (`PortfolioCard`) and rate them (`RatingActions`).
+- **Leaderboard**: A ranked list (`LeaderboardTable`) displaying the top professionals based on community engagement and ratings.
+
+---
+
+## 🛠️ 2. Technology Stack
+The project is built on a modern, high-performance React stack:
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **UI & Styling**: 
+  - [Tailwind CSS v4](https://tailwindcss.com/)
+  - [Shadcn UI](https://ui.shadcn.com/) & Radix UI Primitives (Accessible components)
+  - [Framer Motion](https://www.framer.com/motion/) (Animations)
+  - [Aceternity UI](https://ui.aceternity.com/) (e.g., [background-beams.tsx](file:///c:/Workspace/Portfolio-forge/src/components/ui/background-beams.tsx))
+- **State Management**: [Zustand v5](https://zustand-demo.pmnd.rs/) (Client-side global state)
+- **Data Fetching**: [TanStack React Query v5](https://tanstack.com/query) (Server state synchronization)
+- **Authentication**: [Clerk](https://clerk.com/) (`@clerk/nextjs`)
+- **Forms & Validation**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Utilities**: `date-fns`, `luxon`, `clsx`, `tailwind-merge`
+
+---
+
+## 📂 3. Folder Structure Architecture
+The project follows a **Feature-Sliced Design (FSD)** variation. Instead of organizing by file type (e.g., all components together, all hooks together), files are grouped by their **feature domain** inside `src/features`.
+
+```text
+c:\Workspace\Portfolio-forge\
+├── next.config.ts         # Next.js build and routing config
+├── package.json           # Project dependencies & scripts
+├── tailwind.config.ts / postcss.config.mjs # Tailwind config
+├── components.json        # Shadcn UI CLI configuration
+├── middleware.ts          # Next.js Middleware (mainly for Clerk Auth)
+└── src/                   # Main source code directory
+    ├── app/               # Next.js App Router (Pages & Layouts)
+    │   ├── (group)/       # Route groups (dashboard, explore, leaderboard)
+    │   ├── sign-in/       # Clerk Sign-in Page
+    │   ├── sign-up/       # Clerk Sign-up Page
+    │   ├── layout.tsx     # Root layout (ClerkProvider, QueryProvider, Fonts)
+    │   └── page.tsx       # Landing Page (Hero section)
+    │
+    ├── features/          # 🌟 Domain-specific logic (The core of the app)
+    │   ├── api/           # API hooks/endpoints
+    │   ├── auth/          # Authentication utilities
+    │   ├── explore/       # Swipe Feed logic (components: PortfolioCard, RatingActions)
+    │   ├── leaderboard/   # Leaderboard logic (components: LeaderboardTable)
+    │   └── portfolio/     # User portfolio logic (components: PortfolioForm, StatsOverview)
+    │
+    ├── components/        # Shared/Global components
+    │   └── ui/            # Shadcn & Aceternity UI components (Button, Card, Table, BackgroundBeams, etc.)
+    │
+    ├── lib/               # 3rd party library initializations (e.g., Prisma, Axios instances)
+    ├── providers/         # Global React Context Providers (e.g., query-provider.tsx)
+    ├── store/             # Global Zustand stores
+    └── utils/             # Helper functions (e.g., cn() for Tailwind classes)
+```
+
+---
+
+## 🚀 4. How to Build It From Scratch (Step-by-Step)
+If you want to recreate this architecture for learning purposes, follow these steps:
+
+### Phase 1: Project Setup & Dependencies
+1. **Initialize Next.js:**
+   ```bash
+   npx create-next-app@latest tempapp --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
+   cd tempapp
+   ```
+2. **Install Core Libraries:**
+   ```bash
+   npm install zustand @tanstack/react-query axios
+   npm install react-hook-form @hookform/resolvers zod
+   npm install framer-motion lucide-react date-fns luxon
+   ```
+3. **Set up Authentication:**
+   ```bash
+   npm install @clerk/nextjs
+   # Setup middleware.ts and wrap RootLayout with <ClerkProvider>
+   ```
+4. **Initialize Shadcn UI:**
+   ```bash
+   npx shadcn@latest init
+   # Install essential components manually:
+   npx shadcn@latest add button card form input label table tabs avatar badge scroll-area slider textarea
+   ```
+
+### Phase 2: Establish the Architecture
+1. **Create the Folder Structure:** Inside `src/`:
+   - Create directories: `features`, `store`, `providers`, `utils`, `lib`.
+   - Inside `features`, create domain folders: `portfolio`, `explore`, `leaderboard`, `auth`.
+   - Inside each domain folder, standard subdirectories: `components`, `lib` (hooks/types/schemas), `utils`.
+2. **Configure Providers:**
+   - Create `src/providers/query-provider.tsx` to wrap the app in React Query's `QueryClientProvider`.
+   - Update `src/app/layout.tsx` to include `ClerkProvider` and `Providers`.
+
+### Phase 3: Build the UI & Pages (App Router)
+1. **Landing Page (`src/app/page.tsx`)**: 
+   - Create a Hero section explaining the "Gamified Ecosystem." 
+   - Add Call-to-Action buttons linking to `/sign-in` and `#explore`.
+2. **Setup Route Groups (`src/app/(group)/`)**:
+   - Create route groups to share layouts across authenticated pages without affecting the URL path.
+   - Example: `src/app/(group)/dashboard/page.tsx`, `src/app/(group)/explore/page.tsx`, `src/app/(group)/leaderboard/page.tsx`.
+   - Create `src/app/(group)/layout.tsx` for the internal app shell (Sidebar/Navbar for logged-in users).
+
+### Phase 4: Implement Features (Domain Driven)
+1. **Portfolio Feature:**
+   - Create `PortfolioForm.tsx` handling react-hook-form and Zod validation.
+   - Create `StatsOverview.tsx` to display view/rating metrics.
+2. **Explore Feature:**
+   - Create `PortfolioCard.tsx` (the UI for swiping or viewing a portfolio).
+   - Create `RatingActions.tsx` (buttons to like/rate/skip).
+3. **Leaderboard Feature:**
+   - Build `LeaderboardTable.tsx` using Shadcn's Table component to map through high-ranking users.
+4. **State Management (Zustand):**
+   - Create slice stores for specific UI state (e.g., `src/store/exploreStore.ts` to hold the current index of the swipe card).
+
+### Phase 5: Polish & Animations
+- Add `framer-motion` to route transitions and the `PortfolioCard` to achieve the "Swipe-Style Discovery".
+- Integrate Aceternity UI components like `BackgroundBeams` into the Landing page for a premium look.
+
+---
+*Happy Coding! Let me know if you want to dive deeper into any specific file or implementation detail.*

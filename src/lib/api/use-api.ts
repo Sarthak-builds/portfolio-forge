@@ -1,17 +1,16 @@
-import { useAuth } from "@clerk/nextjs";
 import { useCallback } from "react";
 import { apiClient } from "@/lib/api-client";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 
 export function useApi() {
-    const { getToken, isLoaded, isSignedIn } = useAuth();
+    const { token, isAuthenticated } = useAuthStore();
     const queryClient = useQueryClient();
 
     const getAuthHeaders = useCallback(async () => {
-        if (!isLoaded || !isSignedIn) return {};
-        const token = await getToken();
-        return token ? { Authorization: `Bearer ${token}` } : {};
-    }, [getToken, isLoaded, isSignedIn]);
+        if (!isAuthenticated || !token) return {};
+        return { Authorization: `Bearer ${token}` };
+    }, [isAuthenticated, token]);
 
     // GET /users/me
     const fetchUserMe = useCallback(async () => {
@@ -20,9 +19,9 @@ export function useApi() {
         return res.data;
     }, [getAuthHeaders]);
 
-    // GET /users/{clerk_id}/portfolios
-    const fetchUserPortfolios = useCallback(async (clerkId: string) => {
-        const res = await apiClient.get(`/users/${clerkId}/portfolios`);
+    // GET /users/{id}/portfolios
+    const fetchUserPortfolios = useCallback(async (userId: string) => {
+        const res = await apiClient.get(`/users/${userId}/portfolios`);
         return res.data;
     }, []);
 

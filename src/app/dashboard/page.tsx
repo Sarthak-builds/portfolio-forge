@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@clerk/nextjs";
+import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { Loader2 } from "lucide-react";
 import { useApi } from "@/features/api/use-api";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { StatsOverview } from "@/features/portfolio/components/StatsOverview";
 import { PortfolioForm } from "@/features/portfolio/components/PortfolioForm";
 
 export default function DashboardPage() {
-    const { user, isLoaded } = useUser();
+    const { user, isLoading: isLoaded } = useAuthStore();
     const { fetchUserPortfolios, createPortfolio } = useApi();
 
     // Fetch user portfolios wrapper hook
@@ -56,7 +56,7 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-8">
             <div>
                 <h1 className="text-3xl font-bold tracking-tight text-zinc-950">
-                    Welcome back, {user?.firstName || "Creator"}
+                    Welcome back, {user?.name || "Creator"}
                 </h1>
                 <p className="text-zinc-500 mt-2">
                     Manage your portfolio pipeline and view your latest engagement stats.
