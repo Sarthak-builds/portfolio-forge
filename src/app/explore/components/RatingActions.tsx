@@ -17,20 +17,20 @@ export function RatingActions({ onDismiss, onLike, onRate, isPending }: RatingAc
                 variant="outline"
                 size="icon"
                 disabled={isPending}
-                className="h-14 w-14 rounded-full border-2 border-red-500/20 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-500 transition-all shadow-sm"
+                className="h-12 w-12 rounded-xl border-border transition-all hover:bg-destructive hover:text-destructive-foreground active:scale-95"
                 onClick={onDismiss}
             >
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5" />
             </Button>
 
-            <div className="flex flex-col items-center -mt-4 gap-2">
-                <div className="flex gap-1.5 bg-white px-4 py-2 rounded-full border border-zinc-200 shadow-sm">
+            <div className="flex flex-col items-center -mt-2 gap-2">
+                <div className="flex gap-1.5 bg-card px-4 py-2.5 rounded-xl border border-border shadow-sm">
                     {[1, 2, 3, 4, 5].map((star) => (
                         <Star
                             key={star}
                             onClick={() => !isPending && onRate(star)}
                             className={`h-5 w-5 transition-colors cursor-pointer ${
-                                isPending ? "text-zinc-200" : "text-zinc-300 hover:text-amber-400"
+                                isPending ? "text-muted opacity-50" : "text-muted-foreground hover:text-amber-400"
                             }`}
                         />
                     ))}
@@ -41,10 +41,10 @@ export function RatingActions({ onDismiss, onLike, onRate, isPending }: RatingAc
                 variant="outline"
                 size="icon"
                 disabled={isPending}
-                className="h-14 w-14 rounded-full border-2 border-emerald-500/20 text-emerald-500 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-500 transition-all shadow-sm"
+                className="h-12 w-12 rounded-xl border-border transition-all hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 active:scale-95"
                 onClick={onLike}
             >
-                <Heart className="h-6 w-6" />
+                <Heart className="h-5 w-5" />
             </Button>
         </div>
     );

@@ -1,22 +1,35 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { StatsOverview } from "@/app/dashboard/components/StatsOverview";
 import { PortfolioForm } from "@/app/dashboard/components/PortfolioForm";
 import { useDashboard } from "@/app/dashboard/hooks/use-dashboard";
 
 export default function DashboardPage() {
+    const router = useRouter();
     const {
         user,
-        isLoaded,
+        isAuthenticated,
         portfoliosLoading,
         currentPortfolio,
         onSubmit,
         createPortfolioMutation
     } = useDashboard();
 
-    if (!isLoaded || portfoliosLoading) {
-        return <div className="flex h-64 items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-zinc-500" /></div>;
+    useEffect(() => {
+        if (!isAuthenticated) {
+            router.push("/auth/sign-in");
+        }
+    }, [isAuthenticated, router]);
+
+    if (!isAuthenticated || portfoliosLoading) {
+        return (
+            <div className="flex min-h-[400px] items-center justify-center">
+                <Loader2 className="h-10 w-10 animate-spin text-zinc-200" />
+            </div>
+        );
     }
 
     return (

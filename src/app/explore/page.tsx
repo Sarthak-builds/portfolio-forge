@@ -1,6 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence } from "motion/react";
+import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { useSwipe } from "@/app/explore/hooks/use-swipe";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,10 +14,20 @@ import { RatingActions } from "@/app/explore/components/RatingActions";
 
 export default function ExplorePage() {
     const cards = useExploreStore((s) => s.cards);
+    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            router.push("/auth/sign-in");
+        }
+    }, [isAuthenticated, router]);
 
     const { isLoading, refetch } = usePortfolioFeed();
     const { rate, dismiss, isPending } = useRating();
     const { x, rotate, opacity, handleDragEnd } = useSwipe(dismiss);
+
+    if (!isAuthenticated) return null;
 
     const topCard = cards[0];
 

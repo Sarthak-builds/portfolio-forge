@@ -9,46 +9,55 @@ import { Portfolio } from '@/app/explore/lib/types';
  * Manages fetching the portfolio feed and loading it into the Zustand store.
  */
 export function usePortfolioFeed() {
-  const { fetchPortfolios } = useApi();
-  const { setCards } = useExploreStore();
+    const { fetchPortfolios } = useApi();
+    const setCards = useExploreStore((s) => s.setCards);
+    const setHasMore = useExploreStore((s) => s.setHasMore);
 
-  const query = useQuery<Portfolio[]>({
-    queryKey: ['portfolios-feed'],
-    queryFn: () => fetchPortfolios(),
-  });
+    const query = useQuery({
+        queryKey: ['portfolio-feed'],
+        queryFn: async () => {
+            const data = await fetchPortfolios();
+            return data as Portfolio[];
+        },
+    });
 
-  useEffect(() => {
-    if (query.data) {
-      setCards(assignCardColors(query.data));
-    }
-  }, [query.data, setCards]);
+    useEffect(() => {
+        if (query.data) {
+            const cardData = assignCardColors(query.data);
+            setCards(cardData);
+            setHasMore(cardData.length > 0);
+        }
+    }, [query.data, setCards, setHasMore]);
 
-  return query;
+    return query;
 }
 
 /**
- * Handles rating a portfolio and removing it from the feed.
+ * Manages the rating actions and updates the local store instantly (optimistic).
  */
 export function useRating() {
-  const { ratePortfolio } = useApi();
-  const { removeTopCard, markRated } = useExploreStore();
+    const { ratePortfolio } = useApi();
+    const dismissFirst = useExploreStore((s) => s.dismissFirst);
 
-  const mutation = useMutation({
-    mutationFn: ({ id, score }: { id: string; score: number }) =>
-      ratePortfolio({ id, score }),
-    onSuccess: (_data, variables) => {
-      markRated(variables.id);
-    },
-  });
+    const mutation = useMutation({
+        mutationFn: ({ id, score }: { id: string; score: number }) => ratePortfolio({ id, score }),
+        onMutate: () => {
+            // Logic handled by the 'dismiss' wrapper for immediate feel
+        },
+    });
 
-  const rate = (id: string, score: number) => {
-    mutation.mutate({ id, score });
-    setTimeout(() => removeTopCard(), 200);
-  };
+    const rate = (id: string, score: number) => {
+        mutation.mutate({ id, score });
+        dismissFirst();
+    };
 
-  const dismiss = () => {
-    setTimeout(() => removeTopCard(), 200);
-  };
+    const dismiss = () => {
+        dismissFirst();
+    };
 
-  return { rate, dismiss, isPending: mutation.isPending };
+    return {
+        rate,
+        dismiss,
+        isPending: mutation.isPending,
+    };
 }

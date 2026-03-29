@@ -1,25 +1,26 @@
-import { CARD_COLORS } from './types';
+export function assignCardColors(cards: any) {
+    // If the data is wrapped (e.g. from a standardized API response), extract it
+    const list = Array.isArray(cards) ? cards : (cards && Array.isArray(cards.data) ? cards.data : []);
+    
+    const colors = [
+        "bg-card",
+        "bg-card",
+        "bg-card",
+        "bg-card",
+        "bg-card",
+    ];
 
-/**
- * Assigns a deterministic color from CARD_COLORS to each portfolio
- * based on its index in the feed.
- */
-export function assignCardColors<T>(items: T[]): (T & { color: string })[] {
-  return items.map((item, i) => ({
-    ...item,
-    color: CARD_COLORS[i % CARD_COLORS.length],
-  }));
+    return list.map((card: any, index: number) => ({
+        ...card,
+        color: colors[index % colors.length],
+    }));
 }
 
-/**
- * Safely extracts the hostname from a URL string.
- * Falls back to the raw url if parsing fails.
- */
-export function getHostname(url: string): string {
-  try {
-    const normalized = url.startsWith('http') ? url : `https://${url}`;
-    return new URL(normalized).hostname;
-  } catch {
-    return url;
-  }
+export function getHostname(url: string) {
+    try {
+        const hostname = new URL(url).hostname;
+        return hostname.replace("www.", "");
+    } catch {
+        return url;
+    }
 }

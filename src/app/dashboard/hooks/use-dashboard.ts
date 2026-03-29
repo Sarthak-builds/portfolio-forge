@@ -1,15 +1,17 @@
+"use client";
+
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { useApi } from "@/lib/api/use-api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useDashboard() {
-    const { user, isLoading: isLoaded } = useAuthStore();
+    const { user, isAuthenticated } = useAuthStore();
     const { fetchUserPortfolios, createPortfolio } = useApi();
 
     const { data: portfolios, isLoading: portfoliosLoading, refetch } = useQuery({
         queryKey: ['user-portfolios', user?.id],
         queryFn: () => fetchUserPortfolios(user?.id as string),
-        enabled: !!user?.id,
+        enabled: !!user?.id && isAuthenticated,
     });
 
     const createPortfolioMutation = useMutation({
@@ -28,20 +30,20 @@ export function useDashboard() {
         const data: any = {
             title: formData.get('title'),
             url: formData.get('url'),
-            github_url: formData.get('github'),
-            tech_stack: stackList,
+            githubUrl: formData.get('github'),
+            techStack: stackList,
             description: formData.get('description'),
         };
 
         createPortfolioMutation.mutate(data);
     };
 
-    const currentPortfolio = portfolios && portfolios.length > 0 ? portfolios[0] : null;
+    const currentPortfolio = portfolios && Array.isArray(portfolios) && portfolios.length > 0 ? portfolios[0] : null;
 
     return {
         user,
-        isLoaded,
-        portfoliosLoading,
+        isAuthenticated,
+        portfoliosLoading: portfoliosLoading || (isAuthenticated && !user?.id),
         currentPortfolio,
         onSubmit,
         createPortfolioMutation
