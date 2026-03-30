@@ -12,7 +12,7 @@ interface RatingActionsProps {
 
 export function RatingActions({ onDismiss, onLike, onRate, isPending }: RatingActionsProps) {
     return (
-        <div className="flex justify-center items-center gap-6 mt-8">
+        <div className="flex justify-between items-center gap-6 mt-8 w-full">
             <Button
                 variant="outline"
                 size="icon"

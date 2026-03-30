@@ -42,12 +42,11 @@ export default function ExplorePage() {
     if (cards.length === 0) {
         return (
             <div className="flex h-[calc(100vh-12rem)] flex-col items-center justify-center text-center">
-                <div className="text-4xl mb-4">🎉</div>
-                <h2 className="text-2xl font-bold text-zinc-900">You're all caught up!</h2>
+                <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">You're all caught up!</h2>
                 <p className="text-zinc-500 max-w-sm mt-2">
                     Check back later for more amazing portfolios to discover and rate.
                 </p>
-                <Button onClick={() => refetch()} variant="outline" className="mt-6">
+                <Button onClick={() => refetch()} variant="outline" className="mt-6 dark:border-zinc-700 dark:text-zinc-300">
                     Refresh Feed
                 </Button>
             </div>
@@ -55,8 +54,8 @@ export default function ExplorePage() {
     }
 
     return (
-        <div className="flex flex-col items-center max-w-sm mx-auto w-full pt-4 md:pt-10">
-            <div className="relative w-full aspect-[4/5] sm:aspect-square md:aspect-[3/4] max-h-[600px]">
+        <div className="fixed inset-0 top-12 bottom-12 md:bottom-0 md:left-64 flex flex-col overflow-hidden bg-zinc-100 dark:bg-zinc-950 z-10">
+            <div className="relative flex-1 w-full h-full z-0 sm:p-4 pb-0">
                 <AnimatePresence>
                     {cards.map((card, index) => (
                         <PortfolioCard
@@ -73,12 +72,16 @@ export default function ExplorePage() {
                 </AnimatePresence>
             </div>
 
-            <RatingActions
-                onDismiss={dismiss}
-                onLike={dismiss}
-                onRate={(score) => topCard && rate(topCard.id, score)}
-                isPending={isPending}
-            />
+            <div className="relative z-20 w-full flex justify-center py-4 sm:py-6 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-zinc-950 dark:via-zinc-950/80 pointer-events-none shrink-0 border-t border-zinc-200/50 dark:border-zinc-800/50 sm:border-transparent pb-4 sm:pb-8">
+                <div className="pointer-events-auto  rounded-full">
+                    <RatingActions
+                        onDismiss={dismiss}
+                        onLike={dismiss}
+                        onRate={(score) => topCard && rate(topCard.id, score)}
+                        isPending={isPending}
+                    />
+                </div>
+            </div>
         </div>
     );
 }
