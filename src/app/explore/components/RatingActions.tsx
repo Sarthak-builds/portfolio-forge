@@ -1,51 +1,128 @@
 "use client";
 
-import { X, Heart, Star } from "lucide-react";
+import React, { useState } from "react";
+import { X, Heart, Star, MessageSquare, Bookmark, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CommentDrawer } from "@/components/custom/CommentDrawer";
+import { useBookmarkStore } from "@/store/useBookmarkStore";
+import { useApi } from "@/lib/api/use-api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface RatingActionsProps {
+    portfolioId?: string;
     onDismiss: () => void;
     onLike: () => void;
     onRate: (score: number) => void;
     isPending?: boolean;
 }
 
-export function RatingActions({ onDismiss, onLike, onRate, isPending }: RatingActionsProps) {
-    return (
-        <div className="flex justify-between items-center gap-6 mt-8 w-full">
-            <Button
-                variant="outline"
-                size="icon"
-                disabled={isPending}
-                className="h-12 w-12 rounded-xl border-border transition-all hover:bg-destructive hover:text-destructive-foreground active:scale-95"
-                onClick={onDismiss}
-            >
-                <X className="h-5 w-5" />
-            </Button>
+export function RatingActions({ portfolioId, onDismiss, onLike, onRate, isPending }: RatingActionsProps) {
+    const [isCommentOpen, setIsCommentOpen] = useState(false);
+    const { toggleBookmark, isBookmarked } = useBookmarkStore();
+    const { fetchComments, commentPortfolio } = useApi();
 
-            <div className="flex flex-col items-center -mt-2 gap-2">
-                <div className="flex gap-1.5 bg-card px-4 py-2.5 rounded-xl border border-border shadow-sm">
+    const { data: comments = [], refetch: refetchComments } = useQuery({
+        queryKey: ["comments", portfolioId],
+        queryFn: () => fetchComments(portfolioId as string),
+        enabled: !!portfolioId && isCommentOpen,
+    });
+
+    const addCommentMutation = useMutation({
+        mutationFn: (content: string) => commentPortfolio({ id: portfolioId as string, content }),
+        onSuccess: () => {
+            refetchComments();
+            toast.success("Comment posted to the forge");
+        },
+    });
+
+    const handleBookmark = () => {
+        if (!portfolioId) return;
+        toggleBookmark(portfolioId);
+        toast.success(isBookmarked(portfolioId) ? "Removed from bookmarks" : "Saved to bookmarks");
+    };
+
+    return (
+        <>
+            <div className="flex items-center gap-3 px-2">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onDismiss}
+                    disabled={isPending}
+                    className="h-12 w-12 rounded-full text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-all active:scale-95"
+                >
+                    <X className="h-6 w-6" />
+                </Button>
+
+                <div className="h-8 w-[1px] bg-white/5 mx-1" />
+
+                <div className="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-full border border-white/5">
                     {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
+                        <button
                             key={star}
                             onClick={() => !isPending && onRate(star)}
-                            className={`h-5 w-5 transition-colors cursor-pointer ${
-                                isPending ? "text-muted opacity-50" : "text-muted-foreground hover:text-amber-400"
-                            }`}
-                        />
+                            disabled={isPending}
+                            className={cn(
+                                "p-1.5 rounded-md transition-all group",
+                                isPending ? "opacity-50 cursor-not-allowed" : "hover:scale-125"
+                            )}
+                        >
+                            <Star className={cn(
+                                "h-5 w-5 transition-colors",
+                                isPending ? "text-zinc-800" : "text-zinc-600 group-hover:text-amber-400 fill-current group-hover:fill-amber-400/20"
+                            )} />
+                        </button>
                     ))}
                 </div>
+
+                <div className="h-8 w-[1px] bg-white/5 mx-1" />
+
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => portfolioId && setIsCommentOpen(true)}
+                    disabled={!portfolioId}
+                    className="h-12 w-12 rounded-full text-zinc-500 hover:text-indigo-400 hover:bg-indigo-500/10 transition-all active:scale-95"
+                >
+                    <MessageSquare className="h-5 w-5" />
+                </Button>
+
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleBookmark}
+                    disabled={!portfolioId}
+                    className={cn(
+                        "h-12 w-12 rounded-full transition-all active:scale-95",
+                        portfolioId && isBookmarked(portfolioId) 
+                        ? "text-amber-400 bg-amber-400/10" 
+                        : "text-zinc-500 hover:text-amber-400 hover:bg-amber-400/10"
+                    )}
+                >
+                    <Bookmark className={cn("h-5 w-5", portfolioId && isBookmarked(portfolioId) && "fill-current")} />
+                </Button>
+
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onLike}
+                    disabled={isPending}
+                    className="h-12 w-12 rounded-full text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all active:scale-95"
+                >
+                    <Heart className="h-6 w-6" />
+                </Button>
             </div>
 
-            <Button
-                variant="outline"
-                size="icon"
-                disabled={isPending}
-                className="h-12 w-12 rounded-xl border-border transition-all hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 active:scale-95"
-                onClick={onLike}
-            >
-                <Heart className="h-5 w-5" />
-            </Button>
-        </div>
+            <CommentDrawer
+                isOpen={isCommentOpen}
+                onOpenChange={setIsCommentOpen}
+                portfolioId={portfolioId || ""}
+                comments={comments}
+                onAddComment={(content) => addCommentMutation.mutate(content)}
+                isSubmitting={addCommentMutation.isPending}
+            />
+        </>
     );
 }

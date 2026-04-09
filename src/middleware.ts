@@ -1,13 +1,22 @@
-// Dummy middleware for proper auth
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-export function middleware() {
-  // Add authentication check logic here, such as verifying the JWT token
-  // from cookies or headers and redirecting to /auth/sign-in if unauthenticated
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get('auth-token')
+  const { pathname } = request.nextUrl
+
+  // Protect /dashboard routes
+  if (pathname.startsWith('/dashboard')) {
+    if (!token) {
+      return NextResponse.redirect(new URL('/auth', request.url))
+    }
+  }
+
+  return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    '/(api|trpc)(.*)',
+    '/dashboard/:path*',
   ],
 }

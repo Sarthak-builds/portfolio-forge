@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/providers/query-provider";
-import { AppProviders } from "@/providers/theme-provider";
 import { AppShell } from "@/components/layout/app-shell";
+import { Toaster } from "sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -26,15 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <AppProviders>
-          <Providers>
-            <AppShell>
-              {children}
-            </AppShell>
-          </Providers>
-        </AppProviders>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        <Providers>
+          <AppShell>
+            {children}
+            <Toaster richColors position="top-center" theme="dark" />
+          </AppShell>
+        </Providers>
       </body>
     </html>
   );

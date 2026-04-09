@@ -5,10 +5,11 @@ export interface LeaderboardEntry {
   title: string;
   url: string;
   tech_stack?: string[];
+  views?: number;
   user: {
     name: string;
     avatarUrl?: string;
   };
 }
 
-export type LeaderboardFilter = "all-time" | "this-month" | "this-week";
+export type LeaderboardFilter = "all-time" | "monthly" | "weekly";

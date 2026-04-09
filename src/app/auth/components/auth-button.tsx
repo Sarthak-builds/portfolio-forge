@@ -31,11 +31,11 @@ export function AuthButton() {
           <Avatar className="h-9 w-9 border-2 border-border/50 transition-transform hover:scale-105">
             <AvatarImage src={`https://avatar.vercel.sh/${user.email}`} />
             <AvatarFallback className="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-bold">
-              {user.name.charAt(0).toUpperCase()}
+              {user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="text-sm font-bold leading-none text-zinc-950 dark:text-zinc-50">{user.name}</span>
+            <span className="text-sm font-bold leading-none text-zinc-950 dark:text-zinc-50">{user?.name || user?.email?.split('@')[0] || 'User'}</span>
             <span className="text-[10px] text-zinc-500 font-medium">Verified Creator</span>
           </div>
         </div>

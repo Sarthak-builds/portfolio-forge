@@ -1,12 +1,12 @@
-"use client";
-
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { useApi } from "@/lib/api/use-api";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { PortfolioFormData } from "../lib/validation";
+import { toast } from "sonner";
 
 export function useDashboard() {
     const { user, isAuthenticated } = useAuthStore();
-    const { fetchUserPortfolios, createPortfolio } = useApi();
+    const { fetchUserPortfolios, createPortfolio, updatePortfolio } = useApi();
 
     const { data: portfolios, isLoading: portfoliosLoading, refetch } = useQuery({
         queryKey: ['user-portfolios', user?.id],
@@ -14,31 +14,27 @@ export function useDashboard() {
         enabled: !!user?.id && isAuthenticated,
     });
 
+    const currentPortfolio = portfolios && Array.isArray(portfolios) && portfolios.length > 0 ? portfolios[0] : null;
+
     const createPortfolioMutation = useMutation({
-        mutationFn: createPortfolio,
+        mutationFn: (data: PortfolioFormData) => {
+            if (currentPortfolio?.id) {
+                return updatePortfolio({ id: currentPortfolio.id, data });
+            }
+            return createPortfolio(data);
+        },
         onSuccess: () => {
             refetch();
+            toast.success(currentPortfolio ? "Portfolio updated in the forge" : "Portfolio forged successfully!");
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || "Forge operation failed");
         }
     });
 
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        const formData = new FormData(e.currentTarget);
-        const stackList = formData.get('stack')?.toString().split(',').map((s) => s.trim()).filter(Boolean) || [];
-
-        const data: any = {
-            title: formData.get('title'),
-            url: formData.get('url'),
-            githubUrl: formData.get('github'),
-            techStack: stackList,
-            description: formData.get('description'),
-        };
-
+    const onSubmit = (data: PortfolioFormData) => {
         createPortfolioMutation.mutate(data);
     };
-
-    const currentPortfolio = portfolios && Array.isArray(portfolios) && portfolios.length > 0 ? portfolios[0] : null;
 
     return {
         user,

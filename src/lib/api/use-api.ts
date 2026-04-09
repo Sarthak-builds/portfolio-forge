@@ -49,6 +49,26 @@ export function useApi() {
         return res.data;
     };
 
+    // POST /portfolios/{id}/like
+    const likePortfolio = async (id: string) => {
+        const headers = getAuthHeaders();
+        const res = await apiClient.post(`/portfolios/${id}/like`, {}, { headers });
+        return res.data;
+    };
+
+    // POST /portfolios/{id}/bookmark
+    const bookmarkPortfolio = async (id: string) => {
+        const headers = getAuthHeaders();
+        const res = await apiClient.post(`/portfolios/${id}/bookmark`, {}, { headers });
+        return res.data;
+    };
+
+    // GET /portfolios/{id}/comments
+    const fetchComments = async (id: string) => {
+        const res = await apiClient.get(`/portfolios/${id}/comments`);
+        return res.data;
+    };
+
     // POST /portfolios/{id}/rate
     const ratePortfolio = async ({ id, score }: { id: string; score: number }) => {
         const headers = getAuthHeaders();
@@ -63,6 +83,13 @@ export function useApi() {
         return res.data;
     };
 
+    // PATCH /portfolios/{id}
+    const updatePortfolio = async ({ id, data }: { id: string; data: any }) => {
+        const headers = getAuthHeaders();
+        const res = await apiClient.patch(`/portfolios/${id}`, data, { headers });
+        return res.data;
+    };
+
     return {
         getAuthHeaders,
         fetchUserMe,
@@ -73,6 +100,10 @@ export function useApi() {
         createPortfolio,
         ratePortfolio,
         commentPortfolio,
+        likePortfolio,
+        bookmarkPortfolio,
+        fetchComments,
+        updatePortfolio,
         queryClient,
     };
 }

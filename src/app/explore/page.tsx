@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { useSwipe } from "@/app/explore/hooks/use-swipe";
-import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useExploreStore } from "@/store/useExploreStore";
 import { usePortfolioFeed, useRating } from "@/app/explore/hooks";
 import { PortfolioCard } from "@/app/explore/components/PortfolioCard";
 import { RatingActions } from "@/app/explore/components/RatingActions";
+import { SkeletonCard } from "@/components/custom/SkeletonCard";
+import { EmptyState } from "@/components/custom/EmptyState";
+import { Sparkles, Compass } from "lucide-react";
+import { GlowBackground } from "@/components/custom/GlowBackground";
 
 export default function ExplorePage() {
     const cards = useExploreStore((s) => s.cards);
@@ -19,7 +21,7 @@ export default function ExplorePage() {
 
     useEffect(() => {
         if (!isAuthenticated) {
-            router.push("/auth/sign-in");
+            router.push("/auth");
         }
     }, [isAuthenticated, router]);
 
@@ -33,52 +35,66 @@ export default function ExplorePage() {
 
     if (isLoading) {
         return (
-            <div className="flex h-[calc(100vh-12rem)] items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-zinc-400" />
+            <div className="relative h-[80vh] w-full overflow-hidden">
+                <SkeletonCard />
             </div>
         );
     }
 
     if (cards.length === 0) {
         return (
-            <div className="flex h-[calc(100vh-12rem)] flex-col items-center justify-center text-center">
-                <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">You're all caught up!</h2>
-                <p className="text-zinc-500 max-w-sm mt-2">
-                    Check back later for more amazing portfolios to discover and rate.
-                </p>
-                <Button onClick={() => refetch()} variant="outline" className="mt-6 dark:border-zinc-700 dark:text-zinc-300">
-                    Refresh Feed
-                </Button>
-            </div>
+            <EmptyState 
+                icon={Sparkles}
+                title="The Forge is Cooling Down"
+                description="You've explored all the modern portfolios in the feed. Check back soon for new creations from the community."
+                action={{
+                    label: "Refresh Feed",
+                    onClick: () => refetch()
+                }}
+            />
         );
     }
 
     return (
-        <div className="fixed inset-0 top-12 bottom-12 md:bottom-0 md:left-64 flex flex-col overflow-hidden bg-zinc-100 dark:bg-zinc-950 z-10">
-            <div className="relative flex-1 w-full h-full z-0 sm:p-4 pb-0">
+        <div className="flex flex-col h-[calc(100vh-14rem)] relative">
+            <div className="mb-10 flex flex-col items-center text-center space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-black text-indigo-400 uppercase tracking-widest">
+                    Live Feed
+                </div>
+                <h1 className="text-3xl font-black tracking-tighter text-white">Discover the Forge</h1>
+                <p className="text-zinc-500 font-medium text-sm">Experience the best developer work on the planet.</p>
+            </div>
+
+            <div className="relative flex-1 w-full max-w-5xl mx-auto perspective-[1000px]">
                 <AnimatePresence>
-                    {cards.map((card, index) => (
-                        <PortfolioCard
-                            key={card.id || index}
-                            card={card as any}
-                            index={index}
-                            isTop={index === 0}
-                            x={x}
-                            rotate={rotate}
-                            opacity={opacity}
-                            onDragEnd={handleDragEnd}
-                        />
-                    ))}
+                    {cards.slice(0, 2).reverse().map((card, index) => {
+                        // Real index for the array slice
+                        const realIndex = cards.indexOf(card);
+                        return (
+                            <PortfolioCard
+                                key={card.id || realIndex}
+                                card={card as any}
+                                index={realIndex}
+                                isTop={realIndex === 0}
+                                x={x}
+                                rotate={rotate}
+                                opacity={opacity}
+                                onDragEnd={handleDragEnd}
+                            />
+                        );
+                    })}
                 </AnimatePresence>
             </div>
 
-            <div className="relative z-20 w-full flex justify-center py-4 sm:py-6 bg-gradient-to-t from-white via-white/80 to-transparent dark:from-zinc-950 dark:via-zinc-950/80 pointer-events-none shrink-0 border-t border-zinc-200/50 dark:border-zinc-800/50 sm:border-transparent pb-4 sm:pb-8">
-                <div className="pointer-events-auto  rounded-full">
+            {/* Float Action Bar */}
+            <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 md:left-[calc(50%+128px)]">
+                <div className="bg-zinc-900/80 backdrop-blur-xl border border-white/10 p-2 rounded-full shadow-[0_0_50px_rgba(0,0,0,0.5)]">
                     <RatingActions
-                        onDismiss={dismiss}
-                        onLike={dismiss}
+                        onDismiss={() => dismiss()}
+                        onLike={() => dismiss()}
                         onRate={(score) => topCard && rate(topCard.id, score)}
                         isPending={isPending}
+                        portfolioId={topCard?.id}
                     />
                 </div>
             </div>
