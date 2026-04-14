@@ -6,15 +6,23 @@ import { toast } from "sonner";
 
 export function useDashboard() {
     const { user, isAuthenticated } = useAuthStore();
-    const { fetchUserPortfolios, createPortfolio, updatePortfolio } = useApi();
+    const { fetchUserPortfolios, createPortfolio, updatePortfolio, deletePortfolio } = useApi();
 
     const { data: portfolios, isLoading: portfoliosLoading, refetch } = useQuery({
         queryKey: ['user-portfolios', user?.id],
-        queryFn: () => fetchUserPortfolios(user?.id as string),
+        queryFn: async () => {
+            try {
+                return await fetchUserPortfolios(user?.id as string);
+            } catch (error: any) {
+                if (error.response?.status === 404) return null;
+                throw error;
+            }
+        },
         enabled: !!user?.id && isAuthenticated,
+        retry: false,
     });
 
-    const currentPortfolio = portfolios && Array.isArray(portfolios) && portfolios.length > 0 ? portfolios[0] : null;
+    const currentPortfolio = portfolios ? (Array.isArray(portfolios) ? (portfolios.length > 0 ? portfolios[0] : null) : portfolios) : null;
 
     const createPortfolioMutation = useMutation({
         mutationFn: (data: PortfolioFormData) => {
@@ -36,12 +44,31 @@ export function useDashboard() {
         createPortfolioMutation.mutate(data);
     };
 
+    const deletePortfolioMutation = useMutation({
+        mutationFn: (id: string) => deletePortfolio(id),
+        onSuccess: () => {
+            refetch();
+            toast.success("Portfolio deleted from the forge");
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || "Failed to delete portfolio");
+        }
+    });
+
+    const onDelete = () => {
+        if (currentPortfolio?.id) {
+            deletePortfolioMutation.mutate(currentPortfolio.id);
+        }
+    };
+
     return {
         user,
         isAuthenticated,
         portfoliosLoading: portfoliosLoading || (isAuthenticated && !user?.id),
         currentPortfolio,
         onSubmit,
-        createPortfolioMutation
+        onDelete,
+        createPortfolioMutation,
+        deletePortfolioMutation
     };
 }

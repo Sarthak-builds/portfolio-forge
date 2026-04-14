@@ -16,7 +16,9 @@ export default function DashboardPage() {
         portfoliosLoading,
         currentPortfolio,
         onSubmit,
-        createPortfolioMutation
+        onDelete,
+        createPortfolioMutation,
+        deletePortfolioMutation
     } = useDashboard();
 
     useEffect(() => {
@@ -80,9 +82,12 @@ export default function DashboardPage() {
                 <PortfolioForm 
                     portfolio={currentPortfolio}
                     onSubmit={onSubmit}
+                    onDelete={onDelete}
                     isPending={createPortfolioMutation.isPending}
                     isSuccess={createPortfolioMutation.isSuccess}
                     isError={createPortfolioMutation.isError}
+                    error={createPortfolioMutation.error}
+                    isDeletePending={deletePortfolioMutation.isPending}
                 />
             </div>
 

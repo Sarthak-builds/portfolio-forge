@@ -14,7 +14,7 @@ export function useApi() {
     // GET /users/me
     const fetchUserMe = async () => {
         const headers = getAuthHeaders();
-        const res = await apiClient.get('/users/me', { headers });
+        const res = await apiClient.get('/auth/me', { headers });
         return res.data;
     };
 
@@ -27,7 +27,8 @@ export function useApi() {
     // GET /portfolios
     const fetchPortfolios = async (params?: Record<string, any>) => {
         const res = await apiClient.get('/portfolios', { params });
-        return res.data;
+        // Handle paginated response structure from backend
+        return res.data?.portfolios || res.data;
     };
 
     // GET /portfolios/{id}
@@ -90,6 +91,13 @@ export function useApi() {
         return res.data;
     };
 
+    // DELETE /portfolios/{id}
+    const deletePortfolio = async (id: string) => {
+        const headers = getAuthHeaders();
+        const res = await apiClient.delete(`/portfolios/${id}`, { headers });
+        return res.data;
+    };
+
     return {
         getAuthHeaders,
         fetchUserMe,
@@ -104,6 +112,7 @@ export function useApi() {
         bookmarkPortfolio,
         fetchComments,
         updatePortfolio,
+        deletePortfolio,
         queryClient,
     };
 }

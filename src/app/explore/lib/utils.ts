@@ -1,6 +1,10 @@
 export function assignCardColors(cards: any) {
     // If the data is wrapped (e.g. from a standardized API response), extract it
-    const list = Array.isArray(cards) ? cards : (cards && Array.isArray(cards.data) ? cards.data : []);
+    const list = Array.isArray(cards) 
+        ? cards 
+        : (cards && Array.isArray(cards.portfolios) 
+            ? cards.portfolios 
+            : (cards && Array.isArray(cards.data) ? cards.data : []));
     
     const colors = [
         "bg-card",

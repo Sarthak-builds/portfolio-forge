@@ -17,7 +17,7 @@ import {
   FormLabel, 
   FormMessage 
 } from "@/components/ui/form";
-import { Github, Globe, Image as ImageIcon, Sparkles, Hash } from "lucide-react";
+import { Github, Globe, Image as ImageIcon, Sparkles, Hash, Trash2 } from "lucide-react";
 import { TagInput } from "@/components/custom/TagInput";
 import { portfolioSchema, PortfolioFormData } from "../lib/validation";
 import { DashboardPortfolio } from "../lib/types";
@@ -29,9 +29,12 @@ interface PortfolioFormProps {
     isPending: boolean;
     isSuccess: boolean;
     isError: boolean;
+    error: any;
+    onDelete?: () => void;
+    isDeletePending?: boolean;
 }
 
-export function PortfolioForm({ portfolio, onSubmit, isPending, isSuccess, isError }: PortfolioFormProps) {
+export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDeletePending, isSuccess, isError, error }: PortfolioFormProps) {
     const form = useForm<PortfolioFormData>({
         resolver: zodResolver(portfolioSchema),
         defaultValues: {
@@ -55,6 +58,16 @@ export function PortfolioForm({ portfolio, onSubmit, isPending, isSuccess, isErr
                 github_url: portfolio.github_url || "",
                 preview_url: portfolio.preview_url || "",
                 tech_stack: portfolio.tech_stack || [],
+            });
+        } else {
+            form.reset({
+                title: "",
+                description: "",
+                tagline: "",
+                url: "",
+                github_url: "",
+                preview_url: "",
+                tech_stack: [],
             });
         }
     }, [portfolio, form]);
@@ -212,11 +225,27 @@ export function PortfolioForm({ portfolio, onSubmit, isPending, isSuccess, isErr
                         <div className="pt-4 border-t border-white/5 flex flex-col sm:flex-row items-center gap-4">
                             <Button 
                                 type="submit" 
-                                disabled={isPending} 
+                                disabled={isPending || isDeletePending} 
                                 className="w-full sm:w-auto px-10 h-14 bg-white text-black hover:bg-zinc-200 font-black text-sm rounded-2xl transition-all shadow-xl active:scale-95 disabled:opacity-50"
                             >
                                 {isPending ? "Syncing with Database..." : (portfolio ? "Update Entry" : "Forging Portfolio")}
                             </Button>
+
+                            {portfolio && onDelete && (
+                                <Button 
+                                    type="button" 
+                                    variant="destructive"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onDelete();
+                                    }}
+                                    disabled={isPending || isDeletePending} 
+                                    className="w-full sm:w-auto px-6 h-14 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 font-black text-sm rounded-2xl transition-all shadow-xl active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    {isDeletePending ? "Deleting..." : "Delete"}
+                                </Button>
+                            )}
                             
                             {isSuccess && (
                                 <div className="flex items-center gap-2 text-emerald-400 animate-in fade-in slide-in-from-left-2">
@@ -226,7 +255,9 @@ export function PortfolioForm({ portfolio, onSubmit, isPending, isSuccess, isErr
                             )}
                             
                             {isError && (
-                                <p className="text-xs font-bold text-red-500 uppercase tracking-widest">Operation failed. Retrying sync...</p>
+                                <p className="text-xs font-bold text-red-500 uppercase tracking-widest animate-in fade-in slide-in-from-left-2">
+                                    Error: {error?.response?.data?.message || error?.message || "Operation failed"}
+                                </p>
                             )}
                         </div>
                     </form>

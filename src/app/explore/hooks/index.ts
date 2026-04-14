@@ -4,6 +4,7 @@ import { useApi } from '@/lib/api/use-api';
 import { useExploreStore } from '@/store/useExploreStore';
 import { assignCardColors } from '@/app/explore/lib/utils';
 import { Portfolio } from '@/app/explore/lib/types';
+import { toast } from 'sonner';
 
 /**
  * Manages fetching the portfolio feed and loading it into the Zustand store.
@@ -17,7 +18,20 @@ export function usePortfolioFeed() {
         queryKey: ['portfolio-feed'],
         queryFn: async () => {
             const data = await fetchPortfolios();
-            return data as Portfolio[];
+            const portfolios = Array.isArray(data) ? data : (data?.portfolios || []);
+            
+            // Map backend fields to frontend fields
+            return portfolios.map((p: any) => ({
+                id: p.id,
+                title: p.name,
+                description: p.description,
+                url: p.liveUrl || null,
+                github_url: p.githubUrl,
+                tech_stack: p.stack,
+                user: p.user,
+                views: p.views,
+                score: p.score
+            })) as Portfolio[];
         },
     });
 
@@ -41,9 +55,9 @@ export function useRating() {
 
     const mutation = useMutation({
         mutationFn: ({ id, score }: { id: string; score: number }) => ratePortfolio({ id, score }),
-        onMutate: () => {
-            // Logic handled by the 'dismiss' wrapper for immediate feel
-        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || "Rating failed");
+        }
     });
 
     const rate = (id: string, score: number) => {
