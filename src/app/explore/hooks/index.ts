@@ -49,20 +49,46 @@ export function usePortfolioFeed() {
 /**
  * Manages the rating actions and updates the local store instantly (optimistic).
  */
+/**
+ * Manages the rating actions and updates the local store instantly (optimistic).
+ */
 export function useRating() {
-    const { ratePortfolio } = useApi();
+    const { ratePortfolio, likePortfolio, bookmarkPortfolio } = useApi();
     const dismissFirst = useExploreStore((s) => s.dismissFirst);
 
-    const mutation = useMutation({
+    const rateMutation = useMutation({
         mutationFn: ({ id, score }: { id: string; score: number }) => ratePortfolio({ id, score }),
         onError: (error: any) => {
             toast.error(error.response?.data?.message || "Rating failed");
         }
     });
 
+    const likeMutation = useMutation({
+        mutationFn: (id: string) => likePortfolio(id),
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || "Like failed");
+        }
+    });
+
+    const bookmarkMutation = useMutation({
+        mutationFn: (id: string) => bookmarkPortfolio(id),
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || "Bookmark failed");
+        }
+    });
+
     const rate = (id: string, score: number) => {
-        mutation.mutate({ id, score });
+        rateMutation.mutate({ id, score });
         dismissFirst();
+    };
+
+    const like = (id: string) => {
+        likeMutation.mutate(id);
+        dismissFirst();
+    };
+
+    const bookmark = (id: string) => {
+        bookmarkMutation.mutate(id);
     };
 
     const dismiss = () => {
@@ -71,7 +97,9 @@ export function useRating() {
 
     return {
         rate,
+        like,
+        bookmark,
         dismiss,
-        isPending: mutation.isPending,
+        isPending: rateMutation.isPending || likeMutation.isPending,
     };
 }

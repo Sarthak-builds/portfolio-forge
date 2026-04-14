@@ -50,37 +50,37 @@ export function useApi() {
         return res.data;
     };
 
-    // POST /portfolios/{id}/like
+    // POST /interactions/like/{id}
     const likePortfolio = async (id: string) => {
         const headers = getAuthHeaders();
-        const res = await apiClient.post(`/portfolios/${id}/like`, {}, { headers });
+        const res = await apiClient.post(`/interactions/like/${id}`, {}, { headers });
         return res.data;
     };
 
-    // POST /portfolios/{id}/bookmark
+    // POST /interactions/bookmark/{id}
     const bookmarkPortfolio = async (id: string) => {
         const headers = getAuthHeaders();
-        const res = await apiClient.post(`/portfolios/${id}/bookmark`, {}, { headers });
+        const res = await apiClient.post(`/interactions/bookmark/${id}`, {}, { headers });
         return res.data;
     };
 
-    // GET /portfolios/{id}/comments
+    // GET /interactions/comment/{id}
     const fetchComments = async (id: string) => {
-        const res = await apiClient.get(`/portfolios/${id}/comments`);
+        const res = await apiClient.get(`/interactions/comment/${id}`);
         return res.data;
     };
 
-    // POST /portfolios/{id}/rate
+    // POST /interactions/rate/{id}
     const ratePortfolio = async ({ id, score }: { id: string; score: number }) => {
         const headers = getAuthHeaders();
-        const res = await apiClient.post(`/portfolios/${id}/rate`, { score }, { headers });
+        const res = await apiClient.post(`/interactions/rate/${id}`, { score }, { headers });
         return res.data;
     };
 
-    // POST /portfolios/{id}/comments
+    // POST /interactions/comment/{id}
     const commentPortfolio = async ({ id, content }: { id: string; content: string }) => {
         const headers = getAuthHeaders();
-        const res = await apiClient.post(`/portfolios/${id}/comments`, { content }, { headers });
+        const res = await apiClient.post(`/interactions/comment/${id}`, { content }, { headers });
         return res.data;
     };
 

@@ -14,11 +14,12 @@ interface RatingActionsProps {
     portfolioId?: string;
     onDismiss: () => void;
     onLike: () => void;
+    onBookmark: () => void;
     onRate: (score: number) => void;
     isPending?: boolean;
 }
 
-export function RatingActions({ portfolioId, onDismiss, onLike, onRate, isPending }: RatingActionsProps) {
+export function RatingActions({ portfolioId, onDismiss, onLike, onBookmark, onRate, isPending }: RatingActionsProps) {
     const [isCommentOpen, setIsCommentOpen] = useState(false);
     const { toggleBookmark, isBookmarked } = useBookmarkStore();
     const { fetchComments, commentPortfolio } = useApi();
@@ -40,6 +41,7 @@ export function RatingActions({ portfolioId, onDismiss, onLike, onRate, isPendin
     const handleBookmark = () => {
         if (!portfolioId) return;
         toggleBookmark(portfolioId);
+        onBookmark(); // Sync with backend
         toast.success(isBookmarked(portfolioId) ? "Removed from bookmarks" : "Saved to bookmarks");
     };
 

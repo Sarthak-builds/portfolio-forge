@@ -26,7 +26,7 @@ export default function ExplorePage() {
     }, [isAuthenticated, router]);
 
     const { isLoading, refetch } = usePortfolioFeed();
-    const { rate, dismiss, isPending } = useRating();
+    const { rate, like, bookmark, dismiss, isPending } = useRating();
     const { x, rotate, opacity, handleDragEnd } = useSwipe(dismiss);
 
     if (!isAuthenticated) return null;
@@ -91,7 +91,8 @@ export default function ExplorePage() {
                 <div className="bg-zinc-900/80 backdrop-blur-xl border border-white/10 p-2 rounded-full shadow-[0_0_50px_rgba(0,0,0,0.5)]">
                     <RatingActions
                         onDismiss={() => dismiss()}
-                        onLike={() => dismiss()}
+                        onLike={() => topCard && like(topCard.id)}
+                        onBookmark={() => topCard && bookmark(topCard.id)}
                         onRate={(score) => topCard && rate(topCard.id, score)}
                         isPending={isPending}
                         portfolioId={topCard?.id}
