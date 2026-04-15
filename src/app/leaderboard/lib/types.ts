@@ -6,6 +6,9 @@ export interface LeaderboardEntry {
   url: string;
   tech_stack?: string[];
   views?: number;
+  likes?: number;
+  bookmarks?: number;
+  comments_count?: number;
   user: {
     name: string;
     avatarUrl?: string;

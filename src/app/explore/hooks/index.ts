@@ -79,12 +79,10 @@ export function useRating() {
 
     const rate = (id: string, score: number) => {
         rateMutation.mutate({ id, score });
-        dismissFirst();
     };
 
     const like = (id: string) => {
         likeMutation.mutate(id);
-        dismissFirst();
     };
 
     const bookmark = (id: string) => {
@@ -92,7 +90,7 @@ export function useRating() {
     };
 
     const dismiss = () => {
-        dismissFirst();
+        // Now manual
     };
 
     return {

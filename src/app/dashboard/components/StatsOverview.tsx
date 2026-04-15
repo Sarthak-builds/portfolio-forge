@@ -1,6 +1,9 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, Heart, Bookmark, MessageSquare, TrendingUp, Trophy } from "lucide-react";
 import { DashboardPortfolio } from "@/app/dashboard/lib/types";
+import { motion } from "motion/react";
 
 interface StatsOverviewProps {
   portfolio: DashboardPortfolio | null;
@@ -9,63 +12,69 @@ interface StatsOverviewProps {
 export function StatsOverview({ portfolio }: StatsOverviewProps) {
   const stats = [
     {
-      title: "Portfolio Views",
+      title: "Discovery",
       value: portfolio?.views || 0,
       icon: Eye,
-      color: "text-blue-400",
-      description: "Total reach"
+      color: "text-blue-500",
+      description: "Portfolio reach"
     },
     {
-      title: "Total Likes",
+      title: "Appreciation",
       value: portfolio?.likes || 0,
       icon: Heart,
-      color: "text-red-400",
-      description: "Community love"
+      color: "text-accent",
+      description: "Total likes"
     },
     {
       title: "Bookmarks",
       value: portfolio?.bookmarks || 0,
       icon: Bookmark,
-      color: "text-indigo-400",
+      color: "text-amber-500",
       description: "Saved for later"
     },
     {
-      title: "Comments",
+      title: "Feedback",
       value: portfolio?.comments_count || 0,
       icon: MessageSquare,
-      color: "text-emerald-400",
-      description: "Rich feedback"
+      color: "text-emerald-500",
+      description: "Total comments"
     },
     {
-      title: "Overall Score",
-      value: portfolio?.score ? portfolio.score.toFixed(1) : "0.0",
+      title: "Forge Score",
+      value: portfolio?.score ? Number(portfolio.score).toFixed(1) : "0.0",
       icon: Trophy,
-      color: "text-amber-400",
-      description: "Ranking weight"
+      color: "text-accent",
+      description: "Community weight"
     },
     {
-      title: "Current Rank",
-      value: "#12", // Mock for now
+      title: "Global Rank",
+      value: portfolio?.rank ? `#${portfolio.rank}` : "Pending",
       icon: TrendingUp,
-      color: "text-indigo-500",
-      description: "In the forge"
+      color: "text-blue-600",
+      description: "Forge position"
     }
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-      {stats.map((stat) => (
-        <Card key={stat.title} className="bg-zinc-900 border-white/5 shadow-xl hover:bg-zinc-900/80 transition-all group overflow-hidden relative">
-          <div className={`absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity`} />
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">{stat.title}</CardTitle>
-            <stat.icon className={`h-3.5 w-3.5 ${stat.color} opacity-60 group-hover:opacity-100 transition-opacity`} />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-black text-white tracking-tighter">{stat.value}</div>
-            <p className="text-[10px] text-zinc-600 font-bold mt-1">{stat.description}</p>
-          </CardContent>
-        </Card>
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      {stats.map((stat, i) => (
+        <motion.div
+            key={stat.title}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05, duration: 0.5 }}
+        >
+            <Card className="bg-card border-border shadow-sm hover:shadow-md transition-all group overflow-hidden h-full rounded-2xl">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
+                    <CardTitle className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">{stat.title}</CardTitle>
+                    <stat.icon className={`h-3 w-3 ${stat.color} opacity-70 group-hover:opacity-100 transition-opacity`} />
+                </CardHeader>
+                <CardContent className="px-4 pb-4">
+                    <div className="text-xl font-black text-foreground tracking-tighter">{stat.value}</div>
+                    <p className="text-[8px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">{stat.description}</p>
+                </CardContent>
+            </Card>
+        </motion.div>
       ))}
     </div>
   );
