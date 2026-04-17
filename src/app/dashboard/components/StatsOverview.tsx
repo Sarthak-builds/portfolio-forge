@@ -56,7 +56,7 @@ export function StatsOverview({ portfolio }: StatsOverviewProps) {
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {stats.map((stat, i) => (
         <motion.div
             key={stat.title}
@@ -64,14 +64,18 @@ export function StatsOverview({ portfolio }: StatsOverviewProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, duration: 0.5 }}
         >
-            <Card className="bg-card border-border shadow-sm hover:shadow-md transition-all group overflow-hidden h-full rounded-2xl">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 pt-4">
-                    <CardTitle className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">{stat.title}</CardTitle>
-                    <stat.icon className={`h-3 w-3 ${stat.color} opacity-70 group-hover:opacity-100 transition-opacity`} />
-                </CardHeader>
-                <CardContent className="px-4 pb-4">
-                    <div className="text-xl font-black text-foreground tracking-tighter">{stat.value}</div>
-                    <p className="text-[8px] text-muted-foreground font-bold uppercase tracking-widest mt-0.5">{stat.description}</p>
+            <Card className="bg-card border-border shadow-sm hover:shadow-xl hover:border-accent/20 transition-all group overflow-hidden h-32 rounded-[2rem] relative">
+                <div className="absolute top-1/2 -right-4 -translate-y-1/2 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                    <stat.icon className="h-24 w-24" />
+                </div>
+                
+                <CardContent className="h-full flex flex-col justify-center px-8 relative z-10">
+                    <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{stat.title}</span>
+                        <stat.icon className={`h-4 w-4 ${stat.color} opacity-40 group-hover:opacity-100 transition-opacity`} />
+                    </div>
+                    <div className="text-4xl font-black text-foreground tracking-tighter mb-1">{stat.value}</div>
+                    <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-widest">{stat.description}</p>
                 </CardContent>
             </Card>
         </motion.div>

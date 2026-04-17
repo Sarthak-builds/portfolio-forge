@@ -66,7 +66,7 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
             <CardHeader className="pb-6 pt-8 px-8">
                 <CardTitle className="text-xl font-black tracking-tighter flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-accent" />
-                    {portfolio ? "Refine Entry" : "Forge New Entry"}
+                    
                 </CardTitle>
                 <CardDescription className="text-muted-foreground font-medium text-xs">
                     {portfolio 
@@ -84,9 +84,9 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                                 name="title"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Project Name</FormLabel>
+                                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Portfolio Name</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Modern SaaS Platform" {...field} className="bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs font-bold" />
+                                            <Input placeholder="minimal portfolio design v1" {...field} className="bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs focus:border-0 " />
                                         </FormControl>
                                         <FormMessage className="text-[9px] font-bold" />
                                     </FormItem>
@@ -98,11 +98,11 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                                 name="tagline"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">One-liner</FormLabel>
+                                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">One-liner</FormLabel>
                                         <FormControl>
                                             <div className="relative">
                                                 <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
-                                                <Input placeholder="The ultimate builder experience" {...field} className="pl-9 bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs font-bold" />
+                                                <Input placeholder="The ultimate builder experience" {...field} className="pl-9 bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs focus:border-0" />
                                             </div>
                                         </FormControl>
                                         <FormMessage className="text-[9px] font-bold" />
@@ -117,7 +117,7 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                             render={({ field }) => (
                                 <FormItem>
                                     <div className="flex items-center justify-between">
-                                        <FormLabel className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Project Description</FormLabel>
+                                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Portfolio Description </FormLabel>
                                         <span className={cn(
                                             "text-[9px] font-black",
                                             (field.value?.length || 0) > 450 ? "text-accent" : "text-muted-foreground"
@@ -128,7 +128,7 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                                     <FormControl>
                                         <Textarea 
                                             placeholder="Deep dive into the architecture, features, and vision..." 
-                                            className="min-h-[100px] bg-muted/30 border-border rounded-xl focus:ring-accent/50 resize-none leading-relaxed text-xs font-medium"
+                                            className="min-h-[100px] bg-muted/30 border-border rounded-xl focus:ring-accent/50 resize-none leading-relaxed text-xs  focus:border-0"
                                             {...field} 
                                         />
                                     </FormControl>
@@ -143,11 +143,11 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                                 name="url"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Live Website</FormLabel>
+                                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Live Website URL</FormLabel>
                                         <FormControl>
                                             <div className="relative">
                                                 <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
-                                                <Input placeholder="https://myapp.com" {...field} className="pl-9 bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs font-bold" />
+                                                <Input placeholder="https://myapp.com" {...field} className="pl-9 bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs hover:border-0" />
                                             </div>
                                         </FormControl>
                                         <FormMessage className="text-[9px] font-bold" />
@@ -160,11 +160,11 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                                 name="github_url"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">GitHub Repository</FormLabel>
+                                        <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">GitHub Repository URL</FormLabel>
                                         <FormControl>
                                             <div className="relative">
                                                 <Github className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
-                                                <Input placeholder="https://github.com/user/repo" {...field} className="pl-9 bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs font-bold" />
+                                                <Input placeholder="https://github.com/user/repo" {...field} className="pl-9 bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs hover:border-0" />
                                             </div>
                                         </FormControl>
                                         <FormMessage className="text-[9px] font-bold" />
@@ -178,11 +178,32 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                             name="preview_url"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Preview Screenshot URL</FormLabel>
+                                    <FormLabel className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Preview Screenshot</FormLabel>
                                     <FormControl>
-                                        <div className="relative">
-                                            <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
-                                            <Input placeholder="https://res.cloudinary.com/..." {...field} className="pl-9 bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs font-bold" />
+                                        <div className="space-y-4">
+                                            <div className="relative">
+                                                <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+                                                <Input placeholder="https://res.cloudinary.com/..." {...field} className="pl-9 bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs hover:border-0" />
+                                            </div>
+                                            
+                                            {field.value && (
+                                                <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden border border-border group">
+                                                    <img 
+                                                        src={field.value} 
+                                                        alt="Preview" 
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                    <button 
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            field.onChange("");
+                                                        }}
+                                                        className="absolute top-2 right-2 p-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground hover:bg-destructive hover:text-white transition-all opacity-0 group-hover:opacity-100"
+                                                    >
+                                                        <Trash2 className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     </FormControl>
                                     <FormMessage className="text-[9px] font-bold" />
@@ -195,7 +216,7 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                             name="tech_stack"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Technology Stack</FormLabel>
+                                    <FormLabel className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Technology Stack</FormLabel>
                                     <FormControl>
                                         <TagInput 
                                             value={field.value} 
@@ -203,7 +224,7 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                                             placeholder="Add tech (e.g. Next.js, Rust)..."
                                         />
                                     </FormControl>
-                                    <FormMessage className="text-[9px] font-bold" />
+                                    <FormMessage className="text-[9px] " />
                                 </FormItem>
                             )}
                         />
@@ -212,9 +233,9 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                             <Button 
                                 type="submit" 
                                 disabled={isPending || isDeletePending} 
-                                className="w-full sm:w-auto px-8 h-11 bg-foreground text-background hover:opacity-90 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                                className="w-full sm:w-auto px-10 h-12 bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 disabled:opacity-50"
                             >
-                                {isPending ? "Syncing..." : (portfolio ? "Update Entry" : "Forge Entry")}
+                                {isPending ? "Syncing..." : (portfolio ? "Update" : "Forge Entry")}
                             </Button>
 
                             {portfolio && onDelete && (
@@ -226,7 +247,7 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                                         onDelete();
                                     }}
                                     disabled={isPending || isDeletePending} 
-                                    className="w-full sm:w-auto px-6 h-11 bg-destructive/5 hover:bg-destructive/10 text-destructive border-destructive/20 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                                    className="w-full sm:w-auto px-8 h-12 bg-destructive/5 hover:bg-destructive/10 text-destructive border-destructive/20 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
                                 >
                                     <Trash2 className="w-3 h-3" />
                                     {isDeletePending ? "Deleting..." : "Delete"}

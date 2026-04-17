@@ -123,13 +123,13 @@ export default function Home() {
             <div className="h-10 w-10 rounded-lg bg-foreground flex items-center justify-center transition-transform group-hover:scale-110 shadow-lg">
               <span className="text-background font-black text-xs">PF</span>
             </div>
-            <span className="text-xl font-semibold tracking-tight hidden sm:block">Portfolio Forge</span>
+            <span className="text-sm font-medium tracking-tight uppercase whitespace-nowrap hidden sm:block">Portfolio Forge</span>
           </Link>
           
           <nav className="hidden md:flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.2em]">
-            <Link href="/explore" className="px-4 py-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">Explore</Link>
-            <Link href="/leaderboard" className="px-4 py-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">Leaderboard</Link>
-            <Link href="/more" className="px-4 py-2 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all duration-300">More</Link>
+            <Link href="/explore" className="px-4 py-2 rounded-lg hover:border-accent hover:border-1 transition-all duration-300">Explore</Link>
+            <Link href="/leaderboard" className="px-4 py-2 rounded-lg hover:border-accent hover:border-1  transition-all duration-300">Leaderboard</Link>
+            <Link href="/dashboard" className="px-4 py-2 rounded-lg hover:border-accent hover:border-1  transition-all duration-300">Dashboard</Link>
           </nav>
           
           <div className="flex items-center gap-4">

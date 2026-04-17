@@ -6,6 +6,7 @@ import { Providers } from "@/providers/query-provider";
 import { AppShell } from "@/components/layout/app-shell";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
+import { SmoothScroll } from "@/components/layout/smooth-scroll";
 
 export const metadata: Metadata = {
   title: "Portfolio Forge",
@@ -22,10 +23,12 @@ export default function RootLayout({
       <body className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <Providers>
-            <AppShell>
-              {children}
-              <Toaster richColors position="top-center" />
-            </AppShell>
+            <SmoothScroll>
+              <AppShell>
+                {children}
+                <Toaster richColors position="top-center" />
+              </AppShell>
+            </SmoothScroll>
           </Providers>
         </ThemeProvider>
       </body>
