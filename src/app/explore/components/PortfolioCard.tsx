@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ExternalLink, Github, Star, Heart, Bookmark, MessageSquare } from "lucide-react";
+import { ThumbsUp, Github, Star, Bookmark, MessageSquare } from "lucide-react";
 import { UserAvatar } from "@/components/custom/UserAvatar";
 import { IframeViewer } from "@/components/custom/IframeViewer";
 import { Badge } from "@/components/ui/badge";
@@ -9,16 +9,13 @@ import { Portfolio } from "@/app/explore/lib/types";
 import { getHostname } from "@/app/explore/lib/utils";
 import { useBookmarkStore } from "@/store/useBookmarkStore";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useState, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useApi } from "@/lib/api/use-api";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
-import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 
 interface PortfolioCardProps {
     card: Portfolio & { color?: string };
@@ -63,183 +60,171 @@ export function PortfolioCard({ card, onLike, onBookmark, onRate, isPending }: P
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full flex flex-col bg-card rounded-2xl border border-border shadow-sm group transition-all duration-500 hover:shadow-2xl hover:border-accent/20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="w-full flex flex-col bg-background"
         >
-            {/* The Theatre Stage: Full Width Preview */}
-            <div className="relative h-[70vh] w-full bg-black overflow-hidden group-hover:brightness-105 transition-all duration-500 shrink-0">
+            {/* The Theatre Stage: Full Screen Preview */}
+            <div className="relative h-[calc(100vh-3rem)] mt-2 rounded-[32px] overflow-hidden bg-black border border-border shadow-2xl shrink-0 group">
                 <IframeViewer url={card.url} title={card.title} />
                 
-                {/* Overlay Links - visible on hover */}
-                <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* Overlay Links */}
+                <div className="absolute top-6 right-8 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     {card.github_url && (
                         <a 
                             href={card.github_url} 
                             target="_blank" 
                             rel="noreferrer"
-                            className="p-2 rounded-lg bg-black/60 backdrop-blur-md text-white border border-white/10 hover:bg-black/80 transition-all"
+                            className="p-3 rounded-2xl bg-black/60 backdrop-blur-md text-white border border-white/10 hover:bg-black/80 transition-all"
                         >
-                            <Github className="w-4 h-4" />
+                            <Github className="w-5 h-5" />
                         </a>
                     )}
                 </div>
             </div>
 
-            {/* The Info Bar: YouTube Inspired */}
-            <div className="p-6 flex flex-col gap-6 bg-card shrink-0 border-t border-border">
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                    <div className="flex gap-4">
+            {/* YouTube Inspired Info Section */}
+            <div className="max-w-7xl mx-auto w-full px-6 py-8 flex flex-col gap-6">
+                
+                {/* 1. Channel & Actions Row */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-center gap-4">
                         <UserAvatar 
                             name={card.user?.name} 
                             image={card.user?.avatarUrl} 
-                            size="lg" 
-                            className="shrink-0 ring-2 ring-transparent group-hover:ring-accent/20 transition-all"
+                            size="md" 
+                            className="w-12 h-12 shrink-0"
                         />
-                        <div className="space-y-1 min-w-0">
-                            <h3 className="text-xl font-bold text-foreground tracking-tight line-clamp-1 font-sans">
-                                {card.title}
-                            </h3>
-                            <p className="text-xs text-muted-foreground font-medium flex items-center gap-2 flex-wrap">
-                                <span className="uppercase tracking-widest">{card.user?.name || 'Anonymous'}</span>
-                                <span className="opacity-40">•</span>
-                                <span className="font-bold text-accent uppercase tracking-[0.2em] text-[10px]">{getHostname(card.url)}</span>
-                            </p>
+                        <div className="flex flex-col">
+                            <span className="text-base font-bold text-foreground leading-tight">{card.user?.name || 'Anonymous'}</span>
+                            <span className="text-xs text-muted-foreground font-medium uppercase tracking-widest">{getHostname(card.url)}</span>
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-end gap-3 shrink-0">
-                        {/* Interactive Rating Component */}
-                        <div className="flex items-center gap-1.5 bg-muted/30 px-3 py-1.5 rounded-xl border border-border">
+                    <div className="flex items-center gap-3">
+                        {/* Star Rating Info - Moved to the left of like */}
+                        <div className="flex items-center gap-2 bg-muted/30 px-5 h-10 rounded-full border border-border/50">
                             {[1, 2, 3, 4, 5].map((star) => (
                                 <button
                                     key={star}
                                     onClick={() => onRate(star)}
                                     disabled={isPending}
-                                    className="p-1 hover:scale-110 transition-all text-muted-foreground hover:text-accent group/star"
+                                    className="p-0.5 hover:scale-125 transition-all text-muted-foreground hover:text-accent group/star"
                                 >
                                     <Star className={cn(
                                         "w-4 h-4 transition-colors",
-                                        (card.score || 0) >= star ? "fill-accent text-accent" : "text-muted-foreground group-hover/star:text-accent/50"
+                                        (card.score || 0) >= star ? "fill-accent text-accent" : "text-muted-foreground/40 group-hover/star:text-accent/50"
                                     )} />
                                 </button>
                             ))}
-                            <span className="ml-2 text-xs font-black text-foreground">{card.score ? Number(card.score).toFixed(1) : "0.0"}</span>
+                            <div className="ml-2 h-4 w-[1px] bg-border" />
+                            <span className="ml-1 text-[10px] font-black uppercase tracking-widest text-foreground">
+                                {card.score ? Number(card.score).toFixed(1) : "0.0"}
+                            </span>
                         </div>
-                    </div>
-                </div>
 
-                {/* Tags & Actions Row */}
-                <div className="flex items-center justify-between py-2 border-y border-border/50">
-                    <div className="flex flex-wrap gap-2 overflow-hidden">
-                        {(card.tech_stack || []).slice(0, 5).map((tag) => (
-                            <Badge key={tag} variant="secondary" className="bg-muted text-muted-foreground border-none text-[9px] px-3 py-0.5 font-bold uppercase tracking-widest">
-                                {tag}
-                            </Badge>
-                        ))}
-                    </div>
+                        {/* Like Pill */}
+                        <div className="flex items-center bg-muted/50 rounded-full h-10 border border-border/50 overflow-hidden">
+                            <button 
+                                onClick={onLike}
+                                disabled={isPending}
+                                className="flex items-center gap-2 px-6 h-full hover:bg-muted transition-colors"
+                            >
+                                <ThumbsUp className="w-4 h-4" />
+                                <span className="text-xs font-bold uppercase tracking-wider">Like</span>
+                            </button>
+                        </div>
 
-                    <div className="flex items-center gap-2">
-                        <button 
-                            onClick={onLike}
-                            disabled={isPending}
-                            className={cn(
-                                "flex items-center gap-2 px-4 py-2 rounded-full transition-all active:scale-95 font-bold text-xs uppercase tracking-widest",
-                                "text-foreground bg-muted/50 hover:bg-muted"
-                            )}
-                        >
-                            <Heart className="w-4 h-4" />
-                            Like
-                        </button>
-                        <button 
-                            onClick={scrollToComments}
-                            className="flex items-center gap-2 px-4 py-2 rounded-full text-foreground bg-muted/50 hover:bg-muted transition-all active:scale-95 font-bold text-xs uppercase tracking-widest"
-                        >
-                            <MessageSquare className="w-4 h-4" />
-                            {comments.length}
-                        </button>
+                        {/* Save Action */}
                         <button 
                             onClick={onBookmark}
                             className={cn(
-                                "p-2.5 rounded-full transition-all active:scale-95",
-                                bookmarked 
-                                ? "text-accent bg-accent/10" 
-                                : "text-foreground bg-muted/50 hover:bg-muted"
+                                "flex items-center gap-2 px-6 h-10 rounded-full bg-muted/50 hover:bg-muted border border-border/50 transition-all",
+                                bookmarked && "text-accent bg-accent/5 border-accent/20"
                             )}
                         >
                             <Bookmark className={cn("w-4 h-4", bookmarked && "fill-current")} />
+                            <span className="text-xs font-bold uppercase tracking-wider text-foreground">Save</span>
                         </button>
                     </div>
                 </div>
 
-                {/* Inline Comments Section */}
-                <div ref={commentsRef} className="space-y-8 pt-4">
-                    <div className="flex flex-col gap-6">
-                        <h4 className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
-                            Comments
-                            <span className="text-muted-foreground">{comments.length}</span>
-                        </h4>
-
-                        {/* Add Comment Form */}
-                        <div className="flex gap-4">
-                            <UserAvatar size="md" className="shrink-0" />
-                            <form onSubmit={handleCommentSubmit} className="flex-1 space-y-3">
-                                <Textarea
-                                    placeholder="Add a comment..."
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                    className="min-h-[40px] bg-transparent border-0 border-b border-border rounded-none focus-visible:ring-0 focus-visible:border-accent transition-all resize-none px-0 py-2 text-sm"
-                                />
-                                <div className="flex justify-end gap-2">
-                                    <Button 
-                                        type="button" 
-                                        variant="ghost" 
-                                        size="sm"
-                                        onClick={() => setNewComment("")}
-                                        className="text-[10px] font-black uppercase tracking-widest"
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button 
-                                        type="submit" 
-                                        size="sm"
-                                        disabled={!newComment.trim() || addCommentMutation.isPending}
-                                        className="bg-accent text-accent-foreground hover:opacity-90 rounded-full px-6 text-[10px] font-black uppercase tracking-widest"
-                                    >
-                                        Comment
-                                    </Button>
+                {/* 2. Description Box (Portfolio Brief) */}
+                <div className="bg-muted/30 rounded-2xl p-6 border border-border/40">
+                    <div className="flex flex-col gap-4">
+                        <div className="space-y-1">
+                            <h2 className="text-xl font-bold tracking-tight text-foreground font-sans uppercase italic">
+                                {card.title}
+                            </h2>
+                            <div className="flex items-center gap-3">
+                                <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Portfolio Brief</span>
+                                <div className="flex gap-2">
+                                    {(card.tech_stack || []).slice(0, 5).map((tag) => (
+                                        <Badge key={tag} variant="secondary" className="bg-foreground/5 text-foreground/60 border-none text-[8px] px-2 py-0.5 font-bold uppercase tracking-widest">
+                                            #{tag}
+                                        </Badge>
+                                    ))}
                                 </div>
-                            </form>
+                            </div>
                         </div>
+                        <p className="text-sm text-foreground/80 leading-relaxed font-medium max-w-4xl">
+                            {card.description || "This forge masterpiece was crafted with precision. Witness the architectural vision and seamless execution of this high-end portfolio."}
+                        </p>
+                    </div>
+                </div>
 
-                        {/* Comments List */}
-                        <div className="space-y-6 pt-4">
-                            {comments.length === 0 ? (
-                                <p className="text-center py-10 text-xs text-muted-foreground font-medium uppercase tracking-widest">No comments yet</p>
-                            ) : (
-                                comments.map((comment: any) => (
-                                    <div key={comment.id} className="flex gap-4">
-                                        <Avatar className="w-9 h-9 shrink-0 border border-border">
-                                            <AvatarImage src={comment.user.avatarUrl} />
-                                            <AvatarFallback className="text-[10px] font-bold">
-                                                {comment.user.name.charAt(0)}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div className="flex-1 space-y-1">
-                                            <div className="flex items-center gap-2">
-                                                <p className="text-xs font-black text-foreground">{comment.user.name}</p>
-                                                <p className="text-[10px] text-muted-foreground font-medium">
-                                                    {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
-                                                </p>
-                                            </div>
-                                            <p className="text-sm text-foreground/80 leading-relaxed">
-                                                {comment.content}
-                                            </p>
+                {/* 3. Comments Section */}
+                <div ref={commentsRef} className="mt-8 space-y-8 max-w-4xl">
+                    <div className="flex items-center gap-8">
+                        <h4 className="text-xl font-bold">{comments.length} Comments</h4>
+                    </div>
+
+                    {/* Add Comment */}
+                    <div className="flex gap-4">
+                        <UserAvatar size="sm" className="w-10 h-10 shrink-0" />
+                        <form onSubmit={handleCommentSubmit} className="flex-1 group">
+                            <input
+                                placeholder="Add a comment..."
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                className="w-full bg-transparent border-0 border-b border-border py-2 text-sm focus:outline-none focus:border-foreground focus:border-b-2 transition-all placeholder:text-muted-foreground/50"
+                            />
+                            <div className="flex justify-end gap-3 mt-3 opacity-0 group-focus-within:opacity-100 transition-opacity">
+                                <Button variant="ghost" size="sm" onClick={() => setNewComment("")} className="text-[10px] font-bold uppercase tracking-widest">Cancel</Button>
+                                <Button type="submit" size="sm" disabled={!newComment.trim()} className="bg-foreground text-background rounded-full px-6 text-[10px] font-black uppercase tracking-widest">Comment</Button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {/* Comment List */}
+                    <div className="space-y-8 pt-4">
+                        {comments.length === 0 ? (
+                            <div className="text-center py-10 opacity-40">
+                                <p className="text-xs font-black uppercase tracking-[0.2em]">No comments yet</p>
+                            </div>
+                        ) : (
+                            comments.map((comment: any) => (
+                                <div key={comment.id} className="flex gap-4 group">
+                                    <Avatar className="w-10 h-10 shrink-0 border border-border/50">
+                                        <AvatarImage src={comment.user.avatarUrl} />
+                                        <AvatarFallback className="text-[10px] font-bold bg-muted">
+                                            {comment.user.name.charAt(0)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1 space-y-1.5">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs font-bold text-foreground">@{comment.user.name.toLowerCase().replace(/\s+/g, '')}</span>
+                                            <span className="text-[10px] text-muted-foreground font-medium">
+                                                {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
+                                            </span>
                                         </div>
+                                        <p className="text-sm text-foreground/90 leading-relaxed font-normal">
+                                            {comment.content}
+                                        </p>
                                     </div>
-                                ))
-                            )}
-                        </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
             </div>

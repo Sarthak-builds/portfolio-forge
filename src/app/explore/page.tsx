@@ -9,19 +9,26 @@ import { PortfolioCard } from "@/app/explore/components/PortfolioCard";
 import { SkeletonCard } from "@/components/custom/SkeletonCard";
 import { EmptyState } from "@/components/custom/EmptyState";
 import { Sparkles, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export default function ExplorePage() {
-    const cards = useExploreStore((s) => s.cards);
+    const storeCards = useExploreStore((s) => s.cards);
     const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
     const router = useRouter();
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [shuffledCards, setShuffledCards] = useState<any[]>([]);
 
     useEffect(() => {
         if (!isAuthenticated) {
             router.push("/auth");
         }
     }, [isAuthenticated, router]);
+
+    useEffect(() => {
+        if (storeCards.length > 0 && shuffledCards.length === 0) {
+            const shuffled = [...storeCards].sort(() => Math.random() - 0.5);
+            setShuffledCards(shuffled);
+        }
+    }, [storeCards, shuffledCards.length]);
 
     const { isLoading, refetch } = usePortfolioFeed();
     const { rate, like, bookmark, isPending } = useRating();
@@ -36,7 +43,7 @@ export default function ExplorePage() {
         );
     }
 
-    if (cards.length === 0 || currentIndex >= cards.length) {
+    if (shuffledCards.length === 0 || currentIndex >= shuffledCards.length) {
         return (
             <EmptyState 
                 icon={Sparkles}
@@ -46,6 +53,7 @@ export default function ExplorePage() {
                     label: "Refresh Feed",
                     onClick: () => {
                         setCurrentIndex(0);
+                        setShuffledCards([]);
                         refetch();
                     }
                 }}
@@ -53,37 +61,44 @@ export default function ExplorePage() {
         );
     }
 
-    const currentCard = cards[currentIndex];
+    const currentCard = shuffledCards[currentIndex];
 
     const handleNext = () => {
-        if (currentIndex < cards.length - 1) {
+        if (currentIndex < shuffledCards.length - 1) {
             setCurrentIndex(prev => prev + 1);
         } else {
-            // Re-fetch or show empty state
-            setCurrentIndex(cards.length);
+            setCurrentIndex(shuffledCards.length);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(prev => prev - 1);
         }
     };
 
     return (
-        <div className=" relative flex flex-col bg-background overflow-hidden">
-            {/* Top Navigation Bar */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card/50 backdrop-blur-sm shrink-0">
-                <div className="flex flex-col">
-                    <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{currentIndex + 1} of {cards.length} portfolios forged</p>
-                </div>
-
-                <Button 
-                    onClick={handleNext}
-                    className="h-10 px-8 rounded-xl bg-foreground text-background hover:opacity-90 font-black text-[10px] uppercase tracking-widest shadow-lg transition-all active:scale-95 group"
+        <div className="relative flex flex-col bg-background min-h-[calc(100vh-4rem)] -m-6 md:-m-12 lg:-m-16 overflow-x-hidden">
+            {/* Navigation Arrows - Bounded to this container */}
+            {currentIndex > 0 && (
+                <button 
+                    onClick={handlePrev}
+                    className="absolute left-2 top-[40vh] -translate-y-1/2 z-50 p-2 rounded-full bg-foreground/5 hover:bg-foreground text-foreground hover:text-background transition-all active:scale-90 shadow-2xl backdrop-blur-xl border border-border/20"
                 >
-                    Next
-                    <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                </Button>
-            </div>
+                    <ChevronRight className="w-5 h-5 rotate-180" />
+                </button>
+            )}
+
+            <button 
+                onClick={handleNext}
+                className="absolute right-2 top-[40vh] -translate-y-1/2 z-50 p-2 rounded-full bg-foreground/5 hover:bg-foreground text-foreground hover:text-background transition-all active:scale-90 shadow-2xl backdrop-blur-xl border border-border/20"
+            >
+                <ChevronRight className="w-5 h-5" />
+            </button>
 
             {/* Content Area - Scrollable for comments */}
-            <div className="flex-1 overflow-y-auto hide-scrollbar p-4 md:px-8 md:pb-8">
-                <div className="max-w-7xl mx-auto">
+            <div className="flex-1 overflow-y-auto hide-scrollbar p-0">
+                <div className="w-full">
                     <PortfolioCard
                         card={currentCard as any}
                         index={currentIndex}
