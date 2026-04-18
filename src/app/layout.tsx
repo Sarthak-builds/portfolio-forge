@@ -11,6 +11,9 @@ import { SmoothScroll } from "@/components/layout/smooth-scroll";
 export const metadata: Metadata = {
   title: "Portfolio Forge",
   description: "Create and rank developer portfolios",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
