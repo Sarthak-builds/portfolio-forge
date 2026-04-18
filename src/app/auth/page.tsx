@@ -7,9 +7,9 @@ import { SignUpForm } from "./components/sign-up-form";
 
 export default function AuthPage() {
   return (
-    <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-700 scale-90 sm:scale-100">
       <Tabs defaultValue="login" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 bg-zinc-900/50 border border-white/5 p-1 rounded-xl mb-8">
+        <TabsList className="grid w-full grid-cols-2 bg-zinc-900/50 border border-white/5 items-center rounded-xl mb-8">
           <TabsTrigger 
             value="login" 
             className="rounded-lg font-bold data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-all"

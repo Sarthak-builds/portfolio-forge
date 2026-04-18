@@ -45,8 +45,14 @@ export default function Home() {
   const rotateX = useTransform(scrollYProgress, [0, 0.2], [20, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     setMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const features = [
@@ -157,49 +163,38 @@ export default function Home() {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] bg-background border-l border-border p-0 flex flex-col">
-                  <div className="p-6 flex flex-col h-full">
-                    <div className="flex items-center justify-between mb-12">
-                       <Link href="/" className="flex items-center gap-3" onClick={() => setIsMobileMenuOpen(false)}>
-                          <div className="h-8 w-8 rounded-lg bg-foreground flex items-center justify-center">
-                            <span className="text-background font-black text-[10px]">PF</span>
-                          </div>
-                          <span className="text-xs font-black uppercase tracking-tighter">Portfolio Forge</span>
-                       </Link>
-                    </div>
-
-                    <nav className="flex flex-col gap-6 uppercase tracking-[0.2em] text-[10px] font-black">
+                <SheetContent side="right" className="w-full bg-background border-none p-0 flex flex-col text-foreground">
+                  <div className="flex flex-col h-full px-8 pt-20 pb-12">
+                    <nav className="flex flex-col gap-8">
                       <Link 
                         href="/dashboard" 
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="p-4 rounded-2xl bg-muted/30 border border-border/50 hover:bg-muted transition-colors flex items-center justify-between group"
+                        className="text-3xl font-light tracking-tighter hover:text-accent transition-colors"
                       >
                         Dashboard
-                        <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                       </Link>
+                      
                       <Link 
                         href="/explore" 
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="p-4 rounded-2xl bg-muted/30 border border-border/50 hover:bg-muted transition-colors flex items-center justify-between group"
+                        className="text-3xl font-light tracking-tighter hover:text-accent transition-colors"
                       >
                         Explore
-                        <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                       </Link>
                       <Link 
                         href="/leaderboard" 
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="p-4 rounded-2xl bg-muted/30 border border-border/50 hover:bg-muted transition-colors flex items-center justify-between group"
+                        className="text-3xl font-light tracking-tighter hover:text-accent transition-colors"
                       >
                         Leaderboard
-                        <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                       </Link>
                     </nav>
 
-                    <div className="mt-auto space-y-6">
-                       <div className="h-[1px] w-full bg-border" />
-                       <div className="flex flex-col gap-4" onClick={() => setIsMobileMenuOpen(false)}>
-                          <AuthButton />
-                       </div>
+                    <div className="mt-auto flex flex-col gap-8">
+                      <div className="flex flex-col gap-4">
+                        <AuthButton />
+                      </div>
+                      
                     </div>
                   </div>
                   <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
@@ -212,8 +207,8 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        <section className="relative w-full hero-bg min-h-[90vh] lg:min-h-screen flex flex-col items-center justify-start z-20 overflow-hidden">
-          <div className="pt-32 md:pt-40 lg:pt-48 pb-64 md:pb-80 lg:pb-96 text-left max-w-7xl mx-auto flex flex-col items-start relative z-10 px-6 md:px-12 w-full">
+        <section className="relative w-full hero-bg min-h-[90vh] lg:min-h-screen flex flex-col items-center justify-start z-30">
+          <div className="pt-24 md:pt-40 lg:pt-48 pb-64 md:pb-80 lg:pb-96 text-left max-w-7xl mx-auto flex flex-col items-start relative z-10 px-6 md:px-12 w-full">
             
             {/* Decorative Icons */}
             <motion.div 
@@ -237,7 +232,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-1.5 text-[10px] md:text-[12px] font-medium uppercase tracking-[0.1em] text-accent mb-8 md:mb-10 shadow-sm"
+              className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-1.5 text-[10px] md:text-[12px] font-medium uppercase tracking-[0.1em] text-accent mb-6 md:mb-10 shadow-sm self-start"
             >
               <Sparkles className="w-4 h-4" />
               place to flaunt your portfolio
@@ -247,7 +242,7 @@ export default function Home() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tighter mb-6 md:mb-8 leading-[1.1] md:leading-[1] dark:text-foreground text-[#000000] max-w-4xl"
+              className="text-4xl sm:text-5xl md:text-7xl lg:text-7xl tracking-tighter mb-4 md:mb-8 leading-[1] md:leading-[1] dark:text-foreground text-[#000000] max-w-4xl text-left"
             >
               Where High-End <br className="hidden sm:block" />
               Portfolios Compete <br className="hidden sm:block" />
@@ -258,27 +253,24 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="max-w-xl text-muted-foreground font-medium text-sm md:text-lg md:leading-relaxed mb-10 md:mb-12"
+              className="max-w-xl text-muted-foreground font-medium text-sm md:text-lg md:leading-relaxed mb-8 md:mb-12 text-left"
             >
               Showcase your best work, get rated by the community, and climb the global leaderboard. The definitive stage for designers and developers.
             </motion.p>
-            
+
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 md:gap-6 w-full sm:w-auto"
+              className="flex flex-row gap-4 md:gap-6 w-auto md:mb-12 self-start"
             >
-              <Link href={isAuthenticated ? "/dashboard" : "/auth"} className="relative group w-full sm:w-auto">
-                <div className="absolute -inset-1 bg-accent/40 rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200" />
-                <Button size="lg" className="relative w-full sm:w-auto h-12 md:h-14 px-8 rounded-xl bg-accent text-accent-foreground hover:opacity-90 font-bold text-sm transition-all active:scale-95 shadow-md shadow-accent/20">
+              <Link href={isAuthenticated ? "/dashboard" : "/auth"} className="relative group">
+                <Button size="lg" className="relative h-9 md:h-12 px-6 md:px-8 rounded-xl bg-accent text-accent-foreground hover:opacity-90 font-bold text-xs md:text-sm transition-all active:scale-95 shadow-md shadow-accent/20">
                   Join the Forge
-                  <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
-              <Link href="/leaderboard" className="relative group w-full sm:w-auto">
-                <div className="absolute -inset-1 bg-foreground/10 rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200" />
-                <Button size="lg" variant="outline" className="relative w-full sm:w-auto h-12 md:h-14 px-8 rounded-xl border-border bg-background/50 backdrop-blur-sm hover:bg-muted text-foreground font-bold text-sm transition-all active:scale-95">
+              <Link href="/leaderboard" className="relative group">
+                <Button size="lg" variant="outline" className="relative h-9 md:h-12 px-6 md:px-8 rounded-xl border-border bg-background/50 backdrop-blur-sm hover:bg-muted text-foreground font-bold text-xs md:text-sm transition-all active:scale-95">
                   Leaderboard
                 </Button>
               </Link>
@@ -286,15 +278,15 @@ export default function Home() {
           </div>
 
           {/* Scroll-Animated Live Preview Mockup */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] md:w-full max-w-5xl px-0 md:px-6 translate-y-1/2 pointer-events-none">
+          <div className="absolute bottom-35 md:bottom-0 left-1/2 -translate-x-1/2 w-[90%] md:w-full max-w-5xl px-0 md:px-6 translate-y-1/2 pointer-events-none z-50">
             <motion.div 
               style={{ 
-                scale, 
-                rotateX, 
-                opacity,
+                scale: isMobile ? 1 : scale, 
+                rotateX: isMobile ? 0 : rotateX, 
+                opacity: isMobile ? 1 : opacity,
                 perspective: "1000px"
               }}
-              className="relative p-1.5 md:p-2 rounded-2xl md:rounded-3xl bg-muted/40 border border-border/50 backdrop-blur-xl shadow-2xl overflow-hidden z-30"
+              className="relative p-1.5 md:p-2 rounded-2xl md:rounded-3xl bg-muted/40 border border-border/50 backdrop-blur-xl shadow-2xl overflow-hidden pointer-events-auto"
             >
               <div className="relative rounded-xl md:rounded-2xl bg-card border border-border aspect-[16/10] overflow-hidden shadow-inner flex flex-col pointer-events-auto">
                 {/* Browser Header */}
@@ -326,8 +318,8 @@ export default function Home() {
         <div className="h-48 sm:h-64 md:h-96" />
 
         {/* Features Section - Bento Grid Style */}
-        <section className="pt-24 pb-14 px-6 container mx-auto relative z-10">
-          <div className="text-center mb-16 md:mb-20">
+        <section className="-mt-30 md:pt-24 pb-14 px-6 container mx-auto relative z-10">
+          <div className="text-center mb-12 md:mb-20">
              <h2 className="text-3xl md:text-6xl tracking-tighter mb-3 flex flex-wrap items-center justify-center gap-2 md:gap-4">
                 <span className="text-accent font-mono text-2xl md:text-5xl">&lt;&gt;</span>
                 Built for the Elite
@@ -371,9 +363,9 @@ export default function Home() {
         </section>
 
         {/* How It Works Section */}
-        <section className="py-24 bg-background relative overflow-hidden">
+        <section className="py-12 md:py-24 bg-background relative overflow-hidden">
           <div className="container mx-auto px-6 relative z-10">
-            <div className="text-center mb-16 md:mb-24">
+            <div className="text-center mb-12 md:mb-24">
                <h2 className="text-3xl md:text-5xl tracking-tighter mb-1 uppercase">How it works</h2>
                <div className="h-1.5 w-16 md:w-20 bg-accent mx-auto rounded-full mb-5" />
                <p className="text-muted-foreground font-medium max-w-2xl mx-auto text-base md:text-lg">Three steps to global recognition. No fluff, just craft.</p>
@@ -428,9 +420,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-[#0A0A0A] text-[#F5F5F5] pt-16 md:pt-24 pb-8 md:pb-12 px-6 border-t border-white/5">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16 md:mb-20">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-16 md:mb-20">
             {/* Column 1: Brand Info */}
-            <div className="space-y-6">
+            <div className="col-span-2 lg:col-span-1 space-y-6">
               <Link href="/" className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-lg bg-white flex items-center justify-center">
                   <span className="text-black font-black text-xs">PF</span>
@@ -453,7 +445,7 @@ export default function Home() {
             {/* Column 2: Platform Links */}
             <div className="space-y-4 md:space-y-6">
               <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Platform</h4>
-              <ul className="space-y-3 md:space-y-4 text-sm font-bold text-muted-foreground">
+              <ul className="space-y-3 md:space-y-4 text-sm font-medium text-muted-foreground">
                 <li><Link href="/explore" className="hover:text-white transition-colors">Explore Arena</Link></li>
                 <li><Link href="/leaderboard" className="hover:text-white transition-colors">Global Rankings</Link></li>
                 <li><Link href="/dashboard" className="hover:text-white transition-colors">User Dashboard</Link></li>
@@ -464,7 +456,7 @@ export default function Home() {
             {/* Column 3: Community Links */}
             <div className="space-y-4 md:space-y-6">
               <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Community</h4>
-              <ul className="space-y-3 md:space-y-4 text-sm font-bold text-muted-foreground">
+              <ul className="space-y-3 md:space-y-4 text-sm font-medium text-muted-foreground">
                 <li><Link href="#" className="hover:text-white transition-colors">The Gauntlet</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Peer Review Scraps</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Weekly Challenges</Link></li>
@@ -473,9 +465,9 @@ export default function Home() {
             </div>
 
             {/* Column 4: Support & Legal */}
-            <div className="space-y-4 md:space-y-6">
+            <div className="hidden lg:block space-y-4 md:space-y-6">
               <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Support</h4>
-              <ul className="space-y-3 md:space-y-4 text-sm font-bold text-muted-foreground">
+              <ul className="space-y-3 md:space-y-4 text-sm font-medium text-muted-foreground">
                 <li><Link href="#" className="hover:text-white transition-colors">Help Center</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Terms of Service</Link></li>
                 <li><Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link></li>

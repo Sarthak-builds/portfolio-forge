@@ -101,7 +101,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground text-sm;
+    @apply bg-background text-foreground text-sm overflow-x-hidden;
     font-family: var(--font-geist-sans), sans-serif;
     font-weight:300;
   }
@@ -144,11 +144,17 @@ html.lenis, html.lenis body {
 }
 
 .hero-bg {
-  background-image: url('/herobg2.png') !important;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-image: none !important;
+}
+
+@media (min-width: 1024px) {
+  .hero-bg {
+    background-image: url('/herobg2.png') !important;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
 }
 
 .hide-scrollbar::-webkit-scrollbar {

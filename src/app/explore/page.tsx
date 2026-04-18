@@ -105,9 +105,15 @@ function ExploreContent() {
     }
 
     return (
-        <div className="relative flex flex-col bg-background min-h-[calc(100vh-4rem)] -m-6 md:-m-12 lg:-m-16 overflow-x-hidden">
-            {/* Content Area - Scrollable for comments */}
-            <div className="flex-1 overflow-y-auto hide-scrollbar p-0">
+        <div className="relative flex flex-col bg-background min-h-screen -m-6 overflow-x-hidden">
+            {/* Mobile View Notice */}
+            <div className="md:hidden bg-accent/10 border-b border-accent/20 py-2 px-4 flex items-center justify-center gap-2">
+                <Sparkles className="w-3 h-3 text-accent" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-accent/80">Switch to desktop for better view</span>
+            </div>
+
+            {/* Content Area */}
+            <div className="w-full">
                 <div className="w-full">
                     <PortfolioCard
                         card={currentCard as any}

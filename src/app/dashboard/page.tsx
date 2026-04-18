@@ -37,7 +37,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="flex flex-col gap-10 max-w-7xl mx-auto -mt-9">
+        <div className="flex flex-col gap-10 max-w-7xl mx-auto sm:-mt-7 w-full overflow-x-hidden">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-1">
                     <h1 className="text-3xl md:text-4xl font-medium tracking-tighter text-foreground">

@@ -9,9 +9,10 @@ interface IframeViewerProps {
   url: string | null;
   title?: string;
   simple?: boolean;
+  deviceMode?: "desktop" | "mobile";
 }
 
-export function IframeViewer({ url, title, simple = false }: IframeViewerProps) {
+export function IframeViewer({ url, title, simple = false, deviceMode = "desktop" }: IframeViewerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
@@ -22,9 +23,13 @@ export function IframeViewer({ url, title, simple = false }: IframeViewerProps) 
   if (!mounted) return null;
 
   return (
-    <div className={cn("flex flex-col h-full w-full overflow-hidden", !simple && "rounded-xl border border-border bg-card shadow-2xl")}>
-      {/* Browser Toolbar / Chrome */}
-      {!simple && (
+    <div className={cn(
+        "flex flex-col h-full w-full overflow-hidden transition-all duration-500", 
+        !simple && "bg-card shadow-2xl",
+        deviceMode === "mobile" && "items-center justify-center bg-black/5"
+    )}>
+      {/* Browser Toolbar / Chrome - Only show for desktop mode */}
+      {!simple && deviceMode === "desktop" && (
         <div className="flex items-center gap-4 px-4 py-2 bg-muted/30 border-b border-border">
           <div className="flex gap-1.5">
             <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/30" />
@@ -55,7 +60,12 @@ export function IframeViewer({ url, title, simple = false }: IframeViewerProps) 
       )}
 
       {/* Iframe Container */}
-      <div className="flex-1 relative bg-white overflow-hidden">
+      <div className={cn(
+        "relative bg-white overflow-hidden transition-all duration-500",
+        deviceMode === "mobile" 
+            ? "w-full max-w-[320px] sm:max-w-[375px] aspect-[9/18] my-4 md:my-8 rounded-[2.5rem] md:rounded-[3rem] border-[6px] md:border-[8px] border-zinc-900 shadow-2xl relative before:content-[''] before:absolute before:top-0 before:left-1/2 before:-translate-x-1/2 before:w-20 md:before:w-32 before:h-4 md:before:h-6 before:bg-zinc-900 before:rounded-b-xl md:before:rounded-b-2xl before:z-20" 
+            : "flex-1"
+      )}>
         {!url ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-background text-center px-4">
             <Globe className="w-12 h-12 text-muted-foreground mb-4 opacity-20" />
@@ -67,11 +77,11 @@ export function IframeViewer({ url, title, simple = false }: IframeViewerProps) 
             {isLoading && (
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background">
                 <Loader2 className="w-8 h-8 text-accent animate-spin mb-4" />
-                <div className="space-y-2 w-64">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-[80%]" />
+                <div className="space-y-2 w-48">
+                  <Skeleton className="h-3 w-full" />
+                  <Skeleton className="h-3 w-[80%]" />
                 </div>
-                <p className="mt-4 text-xs text-muted-foreground font-medium tracking-tight">Initializing secure preview...</p>
+                <p className="mt-4 text-[10px] text-muted-foreground font-medium tracking-tight">Initializing secure preview...</p>
               </div>
             )}
             

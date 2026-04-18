@@ -55,22 +55,22 @@ export default function BookmarkedPage() {
     }
 
     return (
-        <div className="flex flex-col gap-12 max-w-7xl mx-auto pb-20 -mt-9">
+        <div className="flex flex-col gap-8 md:gap-12 max-w-7xl mx-auto pb-20 px-4 md:px-0 md:-mt-9">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8">
                
                  <div className="space-y-1">
                     <h1 className="text-3xl md:text-4xl font-medium tracking-tighter text-foreground">
                         Bookmarked
                     </h1>
-                    <p className="text-muted-foreground font-medium max-w-lg text-xs leading-relaxed">
+                    <p className="text-muted-foreground font-medium max-w-lg text-[11px] md:text-xs leading-relaxed">
                         Your curated collection of top-tier developer excellence. Forged by code, saved by you.
                     </p>
                 </div>
             </div>
 
             {/* Grid of Bookmarked Portfolios */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {bookmarks.map((bookmark: any) => {
                     const p = bookmark.portfolio;
                     return (

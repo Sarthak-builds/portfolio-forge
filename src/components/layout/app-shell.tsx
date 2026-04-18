@@ -178,7 +178,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </aside>
 
             {/* Main content */}
-            <div className="flex flex-1 flex-col transition-all duration-500">
+            <div className="flex flex-1 flex-col transition-all duration-500 min-w-0 overflow-x-hidden">
                 <header className="flex h-16 items-center justify-between border-b border-border bg-background/80 backdrop-blur-md px-6 md:px-12 sticky top-0 z-30 transition-all duration-500">
                     <div className="md:hidden">
                         <Link href="/" className="flex items-center gap-2">
@@ -192,7 +192,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         {/* Breadcrumb removed as requested */}
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 md:gap-4">
                         {mounted && (
                             <Button
                                 variant="ghost"
@@ -203,8 +203,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                                 {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                             </Button>
                         )}
-                        <div className="h-6 w-[1px] bg-border mx-1" />
-                        <AuthButton />
+                        <div className="hidden md:block h-6 w-[1px] bg-border mx-1" />
+                        
+                        {/* Desktop AuthButton */}
+                        <div className="hidden md:block">
+                            <AuthButton />
+                        </div>
+
+                        {/* Mobile AuthButton (Icon only) */}
+                        <div className="md:hidden">
+                            <AuthButton isMinimal={true} />
+                        </div>
                     </div>
                 </header>
 
@@ -229,7 +238,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                             )}
                         >
                             <item.icon className="h-5 w-5" />
-                            <span className="text-[9px] font-black uppercase tracking-widest">{item.name.split(' ').pop()}</span>
+                            <span className="text-[9px] uppercase tracking-widest">{item.name.split(' ').pop()}</span>
                         </Link>
                     );
                 })}

@@ -61,7 +61,7 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
 
     return (
         <Card className="bg-card border-border shadow-sm overflow-hidden rounded-2xl transition-all duration-500 hover:shadow-xl">
-            <CardHeader className="pb-6 pt-8 px-8">
+            <CardHeader className="sm:pb-6 sm:pt-8 sm:px-8">
                 <CardTitle className="text-xl font-black tracking-tighter flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-accent" />
                     
@@ -73,10 +73,10 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                     }
                 </CardDescription>
             </CardHeader>
-            <CardContent className="px-8 pb-8">
+            <CardContent className="sm:px-8 sm:pb-8">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <div className="grid gap-6 md:grid-cols-2">
+                        <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="title"
@@ -193,7 +193,7 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                             <Button 
                                 type="submit" 
                                 disabled={isPending || isDeletePending} 
-                                className="w-full sm:w-auto px-10 h-12 bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                                className="w-full sm:w-auto px-4 sm:px-6 h-10 sm:h-12 bg-accent/10 hover:bg-accent/20 text-accent border border-accent/20 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-sm active:scale-95 disabled:opacity-50"
                             >
                                 {isPending ? "Syncing..." : (portfolio ? "Update" : "Forge Entry")}
                             </Button>
@@ -207,7 +207,7 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                                         onDelete();
                                     }}
                                     disabled={isPending || isDeletePending} 
-                                    className="w-full sm:w-auto px-8 h-12 bg-destructive/5 hover:bg-destructive/10 text-destructive border-destructive/20 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                                    className="w-full sm:w-auto px-4 sm:px-6 h-10 sm:h-12 bg-destructive/5 hover:bg-destructive/10 text-destructive border-destructive/20 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
                                 >
                                     <Trash2 className="w-3 h-3" />
                                     {isDeletePending ? "Deleting..." : "Delete"}
