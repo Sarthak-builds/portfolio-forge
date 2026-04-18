@@ -10,6 +10,8 @@ export function useLeaderboard(filter: string) {
     const query = useQuery({
         queryKey: ['leaderboard', filter],
         queryFn: () => fetchLeaderboard(filter),
+        staleTime: 0,
+        refetchOnMount: true,
     });
 
     useEffect(() => {

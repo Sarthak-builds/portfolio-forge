@@ -46,7 +46,7 @@ export function AuthButton() {
           className="h-9 rounded-xl border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground font-bold transition-all"
         >
           <LogOut className="h-3.5 w-3.5" />
-          <span className="hidden sm:inline ml-2 text-[10px] uppercase tracking-widest">Sign out</span>
+          <span className="hidden sm:inline ml-2 text-[10px] uppercase tracking-widest">Log out</span>
         </Button>
       </div>
     );

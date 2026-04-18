@@ -5,7 +5,6 @@ export interface DashboardPortfolio {
   tagline?: string;
   url: string;
   github_url?: string;
-  preview_url?: string;
   tech_stack: string[];
   views?: number;
   score?: number;

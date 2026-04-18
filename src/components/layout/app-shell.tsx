@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Compass, Trophy, LogOut, Sun, Moon, ChevronLeft, ChevronRight, Zap, MessageSquareText, Users, Flame } from "lucide-react";
+import { LayoutDashboard, Compass, Trophy, LogOut, Sun, Moon, ChevronLeft, ChevronRight, Zap, MessageSquareText, Users, Flame, Bookmark } from "lucide-react";
 import { AuthButton } from "@/app/auth/components/auth-button";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
     const [featureIndex, setFeatureIndex] = useState(0);
 
     const comingSoonFeatures = [
@@ -45,6 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         { name: "Myspace", href: "/dashboard", icon: LayoutDashboard },
         { name: "Explore", href: "/explore", icon: Compass },
         { name: "Leaderboard", href: "/leaderboard", icon: Trophy },
+        { name: "Bookmarked", href: "/bookmarked", icon: Bookmark },
     ];
 
     return (

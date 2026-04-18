@@ -27,14 +27,17 @@ export function UserAvatar({ name = "User", image, className, glow = false, size
     .toUpperCase()
     .slice(0, 2);
 
+  // Generate a consistent default avatar based on the name
+  const defaultAvatar = `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(name)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`;
+
   return (
     <div className={cn("relative group", className)}>
       {glow && (
-        <div className="absolute inset-0 bg-indigo-500/30 blur-md rounded-full scale-110 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-accent/30 blur-md rounded-full scale-110 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       )}
-      <Avatar className={cn(sizeClasses[size], "border border-white/10 ring-2 ring-transparent group-hover:ring-indigo-500/20 transition-all duration-300")}>
-        <AvatarImage src={image} alt={name} className="object-cover" />
-        <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold tracking-tighter">
+      <Avatar className={cn(sizeClasses[size], "border border-border ring-2 ring-transparent group-hover:ring-accent/20 transition-all duration-300")}>
+        <AvatarImage src={image || defaultAvatar} alt={name} className="object-cover" />
+        <AvatarFallback className="bg-accent text-accent-foreground font-black tracking-tighter">
           {initials}
         </AvatarFallback>
       </Avatar>

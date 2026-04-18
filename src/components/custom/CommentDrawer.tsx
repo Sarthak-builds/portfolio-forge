@@ -53,13 +53,13 @@ export function CommentDrawer({
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-md bg-[#0a0a0a] border-white/5 p-0 flex flex-col">
-        <SheetHeader className="p-6 border-b border-white/5">
+      <SheetContent side="right" className="w-full sm:max-w-md bg-card border-border p-0 flex flex-col">
+        <SheetHeader className="p-6 border-b border-border">
           <SheetTitle className="flex items-center gap-2 text-xl font-bold tracking-tight">
-            <MessageSquareIcon className="w-5 h-5 text-indigo-500" />
+            <MessageSquareIcon className="w-5 h-5 text-accent" />
             Comments
           </SheetTitle>
-          <SheetDescription className="text-zinc-500 font-medium">
+          <SheetDescription className="text-muted-foreground font-medium">
             {comments.length} thoughts from the community
           </SheetDescription>
         </SheetHeader>
@@ -68,26 +68,26 @@ export function CommentDrawer({
           <div className="space-y-6">
             {comments.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <MessageSquareIcon className="w-10 h-10 text-zinc-800 mb-4" />
-                <p className="text-zinc-500 text-sm font-medium">No comments yet. Be the first to share your thoughts!</p>
+                <MessageSquareIcon className="w-10 h-10 text-muted/30 mb-4" />
+                <p className="text-muted-foreground text-sm font-medium">No comments yet. Be the first to share your thoughts!</p>
               </div>
             ) : (
               comments.map((comment) => (
                 <div key={comment.id} className="flex gap-3">
-                  <Avatar className="w-8 h-8 border border-white/5">
+                  <Avatar className="w-8 h-8 border border-border">
                     <AvatarImage src={comment.user.avatarUrl} />
-                    <AvatarFallback className="text-[10px] bg-zinc-900 text-zinc-400 font-bold">
+                    <AvatarFallback className="text-[10px] bg-muted text-muted-foreground font-bold">
                       {comment.user.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-bold text-zinc-200">{comment.user.name}</p>
-                      <p className="text-[10px] text-zinc-600 font-medium">
+                      <p className="text-sm font-bold text-foreground">{comment.user.name}</p>
+                      <p className="text-[10px] text-muted-foreground font-medium">
                         {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
                       </p>
                     </div>
-                    <p className="text-sm text-zinc-400 leading-relaxed bg-zinc-900/50 p-3 rounded-xl border border-white/5">
+                    <p className="text-sm text-foreground/80 leading-relaxed bg-muted/30 p-3 rounded-xl border border-border">
                       {comment.content}
                     </p>
                   </div>
@@ -97,18 +97,18 @@ export function CommentDrawer({
           </div>
         </ScrollArea>
 
-        <div className="p-6 border-t border-white/5 bg-zinc-950/50">
+        <div className="p-6 border-t border-border bg-muted/20">
           <form onSubmit={handleSubmit} className="space-y-3">
             <Textarea
               placeholder="What do you think of this portfolio?"
-              className="min-h-[100px] bg-zinc-900 border-white/10 focus-visible:ring-indigo-500/50 rounded-xl resize-none text-zinc-200"
+              className="min-h-[100px] bg-background border-border focus-visible:ring-accent/50 rounded-xl resize-none text-foreground"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
             />
             <Button
               type="submit"
               disabled={isSubmitting || !newComment.trim()}
-              className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl h-11 transition-all active:scale-[0.98] flex items-center gap-2"
+              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-black uppercase tracking-widest text-[10px] rounded-xl h-11 transition-all active:scale-[0.98] flex items-center gap-2"
             >
               {isSubmitting ? (
                 <span className="w-4 h-4 rounded-full border-2 border-white/20 border-t-white animate-spin" />

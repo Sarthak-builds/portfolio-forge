@@ -11,4 +11,9 @@ export interface Portfolio {
   };
   views?: number;
   score?: number;
+  userInteraction?: {
+    hasLiked: boolean;
+    hasBookmarked: boolean;
+    rating: number;
+  };
 }

@@ -86,7 +86,7 @@ export function RatingActions({ portfolioId, onDismiss, onLike, onBookmark, onRa
                     size="icon"
                     onClick={() => portfolioId && setIsCommentOpen(true)}
                     disabled={!portfolioId}
-                    className="h-12 w-12 rounded-full text-zinc-500 hover:text-indigo-400 hover:bg-indigo-500/10 transition-all active:scale-95"
+                    className="h-12 w-12 rounded-full text-muted-foreground hover:text-accent hover:bg-accent/10 transition-all active:scale-95"
                 >
                     <MessageSquare className="h-5 w-5" />
                 </Button>
@@ -100,7 +100,7 @@ export function RatingActions({ portfolioId, onDismiss, onLike, onBookmark, onRa
                         "h-12 w-12 rounded-full transition-all active:scale-95",
                         portfolioId && isBookmarked(portfolioId) 
                         ? "text-amber-400 bg-amber-400/10" 
-                        : "text-zinc-500 hover:text-amber-400 hover:bg-amber-400/10"
+                        : "text-muted-foreground hover:text-amber-400 hover:bg-amber-400/10"
                     )}
                 >
                     <Bookmark className={cn("h-5 w-5", portfolioId && isBookmarked(portfolioId) && "fill-current")} />
@@ -111,7 +111,7 @@ export function RatingActions({ portfolioId, onDismiss, onLike, onBookmark, onRa
                     size="icon"
                     onClick={onLike}
                     disabled={isPending}
-                    className="h-12 w-12 rounded-full text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all active:scale-95"
+                    className="h-12 w-12 rounded-full text-muted-foreground hover:text-accent hover:bg-accent/10 transition-all active:scale-95"
                 >
                     <Heart className="h-6 w-6" />
                 </Button>

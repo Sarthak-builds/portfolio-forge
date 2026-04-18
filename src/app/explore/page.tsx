@@ -1,37 +1,80 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { useExploreStore } from "@/store/useExploreStore";
 import { usePortfolioFeed, useRating } from "@/app/explore/hooks";
+import { useApi } from "@/lib/api/use-api";
 import { PortfolioCard } from "@/app/explore/components/PortfolioCard";
 import { SkeletonCard } from "@/components/custom/SkeletonCard";
 import { EmptyState } from "@/components/custom/EmptyState";
-import { Sparkles, ChevronRight } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
-export default function ExplorePage() {
-    const storeCards = useExploreStore((s) => s.cards);
+function ExploreContent() {
     const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const targetId = searchParams.get("id");
+
+    const storeCards = useExploreStore((s) => s.cards);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [shuffledCards, setShuffledCards] = useState<any[]>([]);
+    const { trackView } = useApi();
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            router.push("/auth");
+        if (storeCards.length > 0) {
+            if (shuffledCards.length === 0) {
+                if (targetId) {
+                    const targetCard = storeCards.find(c => c.id === targetId);
+                    if (targetCard) {
+                        // Put target card at the beginning, then shuffle the rest
+                        const others = storeCards.filter(c => c.id !== targetId).sort(() => Math.random() - 0.5);
+                        setShuffledCards([targetCard, ...others]);
+                        return;
+                    }
+                }
+                
+                const shuffled = [...storeCards].sort(() => Math.random() - 0.5);
+                setShuffledCards(shuffled);
+            } else {
+                // Update existing shuffled cards with new data from storeCards to reflect likes/scores
+                const updated = shuffledCards.map(sc => {
+                    const fresh = storeCards.find(s => s.id === sc.id);
+                    return fresh ? { ...sc, ...fresh } : sc;
+                });
+                // Check if they are actually different before setting state to avoid loops
+                if (JSON.stringify(updated) !== JSON.stringify(shuffledCards)) {
+                    setShuffledCards(updated);
+                }
+            }
         }
-    }, [isAuthenticated, router]);
+    }, [storeCards, shuffledCards, targetId]);
+
+    const currentCard = shuffledCards[currentIndex];
 
     useEffect(() => {
-        if (storeCards.length > 0 && shuffledCards.length === 0) {
-            const shuffled = [...storeCards].sort(() => Math.random() - 0.5);
-            setShuffledCards(shuffled);
+        if (currentCard?.id && isAuthenticated) {
+            trackView(currentCard.id).catch(console.error);
         }
-    }, [storeCards, shuffledCards.length]);
+    }, [currentCard?.id, trackView, isAuthenticated]);
 
     const { isLoading, refetch } = usePortfolioFeed();
     const { rate, like, bookmark, isPending } = useRating();
+
+    const handleNext = () => {
+        if (currentIndex < shuffledCards.length - 1) {
+            setCurrentIndex(prev => prev + 1);
+        } else {
+            setCurrentIndex(shuffledCards.length);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(prev => prev - 1);
+        }
+    };
 
     if (!isAuthenticated) return null;
 
@@ -61,41 +104,8 @@ export default function ExplorePage() {
         );
     }
 
-    const currentCard = shuffledCards[currentIndex];
-
-    const handleNext = () => {
-        if (currentIndex < shuffledCards.length - 1) {
-            setCurrentIndex(prev => prev + 1);
-        } else {
-            setCurrentIndex(shuffledCards.length);
-        }
-    };
-
-    const handlePrev = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex(prev => prev - 1);
-        }
-    };
-
     return (
         <div className="relative flex flex-col bg-background min-h-[calc(100vh-4rem)] -m-6 md:-m-12 lg:-m-16 overflow-x-hidden">
-            {/* Navigation Arrows - Bounded to this container */}
-            {currentIndex > 0 && (
-                <button 
-                    onClick={handlePrev}
-                    className="absolute left-2 top-[40vh] -translate-y-1/2 z-50 p-2 rounded-full bg-foreground/5 hover:bg-foreground text-foreground hover:text-background transition-all active:scale-90 shadow-2xl backdrop-blur-xl border border-border/20"
-                >
-                    <ChevronRight className="w-5 h-5 rotate-180" />
-                </button>
-            )}
-
-            <button 
-                onClick={handleNext}
-                className="absolute right-2 top-[40vh] -translate-y-1/2 z-50 p-2 rounded-full bg-foreground/5 hover:bg-foreground text-foreground hover:text-background transition-all active:scale-90 shadow-2xl backdrop-blur-xl border border-border/20"
-            >
-                <ChevronRight className="w-5 h-5" />
-            </button>
-
             {/* Content Area - Scrollable for comments */}
             <div className="flex-1 overflow-y-auto hide-scrollbar p-0">
                 <div className="w-full">
@@ -106,10 +116,29 @@ export default function ExplorePage() {
                         onLike={() => like(currentCard.id)}
                         onBookmark={() => bookmark(currentCard.id)}
                         onRate={(score) => rate(currentCard.id, score)}
+                        onNext={handleNext}
+                        onPrev={currentIndex > 0 ? handlePrev : undefined}
                         isPending={isPending}
                     />
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ExplorePage() {
+    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            router.push("/auth");
+        }
+    }, [isAuthenticated, router]);
+
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center h-screen"><SkeletonCard /></div>}>
+            <ExploreContent />
+        </Suspense>
     );
 }

@@ -98,11 +98,33 @@ export function useApi() {
         return res.data;
     };
 
+    // GET /interactions/bookmarks
+    const fetchBookmarks = async () => {
+        const headers = getAuthHeaders();
+        const res = await apiClient.get('/interactions/bookmarks', { headers });
+        return res.data;
+    };
+
+    // GET /portfolios/explore
+    const fetchExploreFeed = async (page: number = 1) => {
+        const headers = getAuthHeaders();
+        const res = await apiClient.get('/portfolios/explore', { params: { page }, headers });
+        return res.data;
+    };
+
+    // POST /portfolios/{id}/view
+    const trackView = async (id: string) => {
+        const headers = getAuthHeaders();
+        const res = await apiClient.post(`/portfolios/${id}/view`, {}, { headers });
+        return res.data;
+    };
+
     return {
         getAuthHeaders,
         fetchUserMe,
         fetchUserPortfolios,
         fetchPortfolios,
+        fetchExploreFeed,
         fetchPortfolio,
         fetchLeaderboard,
         createPortfolio,
@@ -110,7 +132,9 @@ export function useApi() {
         commentPortfolio,
         likePortfolio,
         bookmarkPortfolio,
+        fetchBookmarks,
         fetchComments,
+        trackView,
         updatePortfolio,
         deletePortfolio,
         queryClient,

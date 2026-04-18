@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils";
 interface IframeViewerProps {
   url: string | null;
   title?: string;
+  simple?: boolean;
 }
 
-export function IframeViewer({ url, title }: IframeViewerProps) {
+export function IframeViewer({ url, title, simple = false }: IframeViewerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
@@ -21,35 +22,37 @@ export function IframeViewer({ url, title }: IframeViewerProps) {
   if (!mounted) return null;
 
   return (
-    <div className="flex flex-col h-full w-full rounded-xl border border-border bg-card overflow-hidden shadow-2xl">
+    <div className={cn("flex flex-col h-full w-full overflow-hidden", !simple && "rounded-xl border border-border bg-card shadow-2xl")}>
       {/* Browser Toolbar / Chrome */}
-      <div className="flex items-center gap-4 px-4 py-2 bg-muted/30 border-b border-border">
-        <div className="flex gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/30" />
-          <div className="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/30" />
-          <div className="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/30" />
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <ChevronLeft className="w-4 h-4 text-muted-foreground/50" />
-          <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
-          <RotateCcw className="w-4 h-4 text-muted-foreground/50" />
-        </div>
+      {!simple && (
+        <div className="flex items-center gap-4 px-4 py-2 bg-muted/30 border-b border-border">
+          <div className="flex gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/30" />
+            <div className="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/30" />
+            <div className="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/30" />
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <ChevronLeft className="w-4 h-4 text-muted-foreground/50" />
+            <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
+            <RotateCcw className="w-4 h-4 text-muted-foreground/50" />
+          </div>
 
-        <div className="flex-1 flex items-center gap-2 px-3 py-1 bg-background/50 border border-border rounded-md">
-          <Globe className="w-3 h-3 text-muted-foreground" />
-          <span className="text-[11px] text-muted-foreground font-medium truncate max-w-md">
-            {(url || "").replace(/https?:\/\//, "") || "No live preview available"}
-          </span>
-        </div>
+          <div className="flex-1 flex items-center gap-2 px-3 py-1 bg-background/50 border border-border rounded-md">
+            <Globe className="w-3 h-3 text-muted-foreground" />
+            <span className="text-[11px] text-muted-foreground font-medium truncate max-w-md">
+              {(url || "").replace(/https?:\/\//, "") || "No live preview available"}
+            </span>
+          </div>
 
-        <div className="flex items-center gap-3">
-          <Share2 className="w-4 h-4 text-muted-foreground hover:text-accent cursor-pointer transition-colors" />
-          <a href={url || undefined} target="_blank" rel="noreferrer">
-            <ExternalLink className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
-          </a>
+          <div className="flex items-center gap-3">
+            <Share2 className="w-4 h-4 text-muted-foreground hover:text-accent cursor-pointer transition-colors" />
+            <a href={url || undefined} target="_blank" rel="noreferrer">
+              <ExternalLink className="w-4 h-4 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
+            </a>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Iframe Container */}
       <div className="flex-1 relative bg-white overflow-hidden">

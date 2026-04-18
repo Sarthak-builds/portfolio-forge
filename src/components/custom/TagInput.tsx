@@ -49,7 +49,7 @@ export function TagInput({ value = [], onChange, placeholder = "Type and press E
             <button
               type="button"
               onClick={() => removeTag(index)}
-              className="p-0.5 rounded-md hover:bg-red-500/10 text-red-500 transition-colors"
+              className="p-0.5 rounded-md hover:bg-red-500/10 text-gray-500 transition-colors"
             >
               <X className="w-3 h-3" />
             </button>

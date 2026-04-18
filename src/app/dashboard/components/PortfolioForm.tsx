@@ -42,7 +42,6 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
             tagline: "",
             url: "",
             github_url: "",
-            preview_url: "",
             tech_stack: [],
         },
     });
@@ -55,7 +54,6 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                 tagline: portfolio.tagline || "",
                 url: portfolio.url,
                 github_url: portfolio.github_url || "",
-                preview_url: portfolio.preview_url || "",
                 tech_stack: portfolio.tech_stack || [],
             });
         }
@@ -172,44 +170,6 @@ export function PortfolioForm({ portfolio, onSubmit, onDelete, isPending, isDele
                                 )}
                             />
                         </div>
-
-                        <FormField
-                            control={form.control}
-                            name="preview_url"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Preview Screenshot</FormLabel>
-                                    <FormControl>
-                                        <div className="space-y-4">
-                                            <div className="relative">
-                                                <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
-                                                <Input placeholder="https://res.cloudinary.com/..." {...field} className="pl-9 bg-muted/30 border-border h-10 rounded-xl focus:ring-accent/50 text-xs hover:border-0" />
-                                            </div>
-                                            
-                                            {field.value && (
-                                                <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden border border-border group">
-                                                    <img 
-                                                        src={field.value} 
-                                                        alt="Preview" 
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                    <button 
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            field.onChange("");
-                                                        }}
-                                                        className="absolute top-2 right-2 p-1.5 rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground hover:bg-destructive hover:text-white transition-all opacity-0 group-hover:opacity-100"
-                                                    >
-                                                        <Trash2 className="w-3.5 h-3.5" />
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage className="text-[9px] font-bold" />
-                                </FormItem>
-                            )}
-                        />
 
                         <FormField
                             control={form.control}

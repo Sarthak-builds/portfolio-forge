@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Loader2, Settings, ExternalLink, Activity, Layout } from "lucide-react";
+import Link from "next/link";
+import { Loader2, Settings, ExternalLink, Activity, Layout, Eye } from "lucide-react";
 import { StatsOverview } from "@/app/dashboard/components/StatsOverview";
 import { PortfolioForm } from "@/app/dashboard/components/PortfolioForm";
 import { useDashboard } from "@/app/dashboard/hooks/use-dashboard";
@@ -49,15 +50,20 @@ export default function DashboardPage() {
                 
                 {currentPortfolio && (
                     <div className="flex items-center gap-3">
+                        <Link href={`/portfolio/${currentPortfolio.id}`}>
+                            {/* <Button className="h-10 px-6 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-sm border border-accent/20">
+                                <Eye className="w-3.5 h-3.5 mr-2" />
+                                Public View
+                            </Button> */}
+                        </Link>
                         <a href={currentPortfolio.url} target="_blank" rel="noreferrer">
-                            <Button className="h-10 px-6 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-sm border border-accent/20">
+                            <Button className="h-10 px-6 rounded-xl bg-foreground text-background hover:opacity-90 font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-sm">
                                 <ExternalLink className="w-3.5 h-3.5 mr-2" />
-                                View Live
+                                Launch Site
                             </Button>
                         </a>
                     </div>
-                )}
-            </div>
+                )}            </div>
 
             <div className="space-y-4">
                 <div className="flex items-center gap-3 mb-4">
