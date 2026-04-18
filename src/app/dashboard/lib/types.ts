@@ -11,4 +11,5 @@ export interface DashboardPortfolio {
   likes?: number;
   bookmarks?: number;
   comments_count?: number;
+  rank: number;
 }
