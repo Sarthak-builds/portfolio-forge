@@ -4,8 +4,9 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, ArrowLeft } from "lucide-react";
+import { Suspense } from "react";
 
-export default function AuthErrorPage() {
+function ErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
@@ -29,5 +30,17 @@ export default function AuthErrorPage() {
         </Button>
       </Link>
     </div>
+  );
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-zinc-500">
+        Authenticating...
+      </div>
+    }>
+      <ErrorContent />
+    </Suspense>
   );
 }
