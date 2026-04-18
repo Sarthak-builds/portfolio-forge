@@ -31,7 +31,7 @@ import { toast } from "sonner";
 export default function PortfolioDetailPage() {
     const { id } = useParams();
     const router = useRouter();
-    const { fetchPortfolio, fetchComments, commentPortfolio, ratePortfolio } = useApi();
+    const { fetchPortfolio, fetchComments, commentPortfolio, ratePortfolio, likePortfolio, bookmarkPortfolio } = useApi();
 
     const { data: portfolio, isLoading } = useQuery({
         queryKey: ["portfolio", id],
@@ -57,6 +57,20 @@ export default function PortfolioDetailPage() {
         mutationFn: (score: number) => ratePortfolio({ id: id as string, score }),
         onSuccess: () => {
             toast.success("Rating submitted");
+        },
+    });
+
+    const likeMutation = useMutation({
+        mutationFn: () => likePortfolio(id as string),
+        onSuccess: (data) => {
+            toast.success(data.liked ? "Liked successfully" : "Like removed");
+        },
+    });
+
+    const bookmarkMutation = useMutation({
+        mutationFn: () => bookmarkPortfolio(id as string),
+        onSuccess: (data) => {
+            toast.success(data.bookmarked ? "Bookmarked successfully" : "Bookmark removed");
         },
     });
 
@@ -206,9 +220,10 @@ export default function PortfolioDetailPage() {
                     <RatingActions 
                         portfolioId={id as string}
                         onDismiss={() => {}}
-                        onLike={() => {}}
+                        onLike={() => likeMutation.mutate()}
+                        onBookmark={() => bookmarkMutation.mutate()}
                         onRate={(score) => rateMutation.mutate(score)}
-                        isPending={rateMutation.isPending}
+                        isPending={rateMutation.isPending || likeMutation.isPending || bookmarkMutation.isPending}
                     />
                 </div>
             </div>
