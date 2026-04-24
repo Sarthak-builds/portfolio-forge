@@ -188,6 +188,20 @@ export default function Home() {
                       >
                         Leaderboard
                       </Link>
+                      <Link 
+                        href="/privacy" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="text-3xl font-light tracking-tighter hover:text-accent transition-colors"
+                      >
+                        Privacy
+                      </Link>
+                      <Link 
+                        href="/terms" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="text-3xl font-light tracking-tighter hover:text-accent transition-colors"
+                      >
+                        Terms
+                      </Link>
                     </nav>
 
                     <div className="mt-auto flex flex-col gap-8">
@@ -468,10 +482,10 @@ export default function Home() {
             <div className="hidden lg:block space-y-4 md:space-y-6">
               <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white">Support</h4>
               <ul className="space-y-3 md:space-y-4 text-sm font-medium text-muted-foreground">
-                <li><Link href="#" className="hover:text-white transition-colors">Help Center</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Terms of Service</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Contact Us</Link></li>
+                <li><Link href="mailto:sarthakshiroty20@gmail.com" className="hover:text-white transition-colors">Help Center</Link></li>
+                <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="mailto:sarthakshiroty20@gmail.com" className="hover:text-white transition-colors">Contact Us</Link></li>
               </ul>
             </div>
           </div>

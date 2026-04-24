@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SignInForm } from "./components/sign-in-form";
 import { SignUpForm } from "./components/sign-up-form";
@@ -34,7 +35,7 @@ export default function AuthPage() {
       </Tabs>
 
       <p className="mt-8 text-center text-xs text-zinc-600 font-medium leading-relaxed">
-        By continuing, you agree to our <span className="text-zinc-400 hover:underline cursor-pointer">Terms of Service</span> and <span className="text-zinc-400 hover:underline cursor-pointer">Privacy Policy</span>.
+        By continuing, you agree to our <Link href="/terms" className="text-zinc-400 hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-zinc-400 hover:underline">Privacy Policy</Link>.
       </p>
     </div>
   );

@@ -36,8 +36,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     // Define paths where the sidebar should NOT show (landing and auth)
     const isAuthPath = pathname?.startsWith("/auth");
     const isLandingPage = pathname === "/";
+    const isPublicPage = pathname === "/privacy" || pathname === "/terms";
     
-    if (isAuthPath || isLandingPage) {
+    if (isAuthPath || isLandingPage || isPublicPage) {
         return <>{children}</>;
     }
 
