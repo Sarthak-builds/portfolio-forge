@@ -146,7 +146,14 @@ export function SignInForm() {
             variant="outline"
             type="button"
             className="w-full h-12 rounded-xl border-zinc-800 bg-transparent hover:bg-zinc-900 text-zinc-300 font-semibold transition-all group"
-            onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/auth/google`}
+            onClick={() => {
+              let baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+              // If it's a domain name without protocol, add https
+              if (baseUrl.includes('.railway.') && !baseUrl.startsWith('http')) {
+                baseUrl = `https://${baseUrl}`;
+              }
+              window.location.href = `${baseUrl}/auth/google`;
+            }}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
               <path
