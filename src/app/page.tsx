@@ -40,7 +40,7 @@ import { apiClient } from "@/lib/api-client";
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, setCredentials, user } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const { scrollYProgress } = useScroll();
   const { theme, resolvedTheme } = useTheme();
   const router = useRouter();
@@ -50,10 +50,17 @@ export default function Home() {
   const opacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    
+    const checkMobile = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth < 768);
+      }
+    };
+    
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -292,7 +299,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="flex flex-row gap-4 md:gap-6 w-auto md:mb-12 self-start"
             >
-              <Link href={isAuthenticated ? "/dashboard" : "/auth"} className="relative group">
+              <Link href={isAuthenticated ? "/dashboard" : "/auth/sign-in"} className="relative group">
                 <Button size="lg" className="relative h-9 md:h-12 px-6 md:px-8 rounded-xl bg-accent text-accent-foreground hover:opacity-90 font-bold text-xs md:text-sm transition-all active:scale-95 shadow-md shadow-accent/20">
                   Join the Forge
                 </Button>
