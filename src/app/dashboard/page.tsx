@@ -8,12 +8,12 @@ import { StatsOverview } from "@/app/dashboard/components/StatsOverview";
 import { PortfolioForm } from "@/app/dashboard/components/PortfolioForm";
 import { useDashboard } from "@/app/dashboard/hooks/use-dashboard";
 import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 
 export default function DashboardPage() {
     const router = useRouter();
+    const { isAuthenticated, user } = useAuthStore();
     const {
-        user,
-        isAuthenticated,
         portfoliosLoading,
         currentPortfolio,
         onSubmit,
@@ -24,7 +24,7 @@ export default function DashboardPage() {
 
     useEffect(() => {
         if (!isAuthenticated) {
-            router.push("/auth");
+            router.push("/auth/sign-in");
         }
     }, [isAuthenticated, router]);
 

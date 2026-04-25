@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../lib/useAuthstore";
 import { apiClient } from "@/lib/api-client";
@@ -10,24 +10,51 @@ import { toast } from "sonner";
 export default function AuthSuccessPage() {
   const router = useRouter();
   const { setCredentials } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const fetchUser = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+
       try {
-        const res = await apiClient.get("auth/me");
+        console.log("AuthSuccess: Verifying session...");
+        
+        // If token is in URL (Google OAuth), use it. 
+        // Otherwise try to use existing session (Cookies)
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const res = await apiClient.get("auth/me", { headers });
         const user = res.data;
-        // Token is in cookie, so we just need user info
-        setCredentials(user, "cookie-based");
-        toast.success("Welcome back!");
-        router.push("/dashboard");
+        
+        // Save the actual token if we have it, otherwise mark as cookie-based
+        setCredentials(user, token || "cookie-based");
+        
+        toast.success(`Welcome back, ${user.name || "Architect"}!`);
+        
+        // Small delay to show success state
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 1000);
+
       } catch (err: any) {
-        console.error("Auth Success Fetch Error:", err);
-        router.push("/auth/sign-in?error=fetch_failed");
+        console.error("Auth Success Verification Failed:", err);
+        toast.error("Failed to synchronize profile. Please sign in again.");
+        router.push("/auth/sign-in?error=verification_failed");
       }
     };
 
     fetchUser();
-  }, [router, setCredentials]);
+  }, [router, setCredentials, mounted]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 text-center">

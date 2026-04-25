@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { AuthButton } from "@/app/auth/components/auth-button";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
@@ -34,6 +35,7 @@ import {
 import { motion, useScroll, useTransform } from "motion/react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { apiClient } from "@/lib/api-client";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -57,53 +59,15 @@ export default function Home() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Handle OAuth Token and Auto-redirect
+  // Handle Auto-redirect for already logged-in users
   useEffect(() => {
     if (!mounted) return;
 
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-
-    if (token && !isVerifying) {
-      const verifyAndLogin = async () => {
-        setIsVerifying(true);
-        try {
-          console.log("Verifying token from URL...");
-          // Verify token and get user profile
-          const res = await apiClient.get("auth/me", {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          
-          const userData = res.data;
-          console.log("OAuth Verification Success. User:", userData.email);
-          
-          // Save credentials to store (local storage via persist)
-          setCredentials(userData, token);
-          
-          // Clean URL
-          window.history.replaceState({}, document.title, window.location.pathname);
-          
-          toast.success(`Welcome back, ${userData.name || "Architect"}!`);
-          
-          // Redirect to dashboard after setting credentials
-          router.push("/dashboard");
-        } catch (err: any) {
-          console.error("OAuth Verification Failed Detail:", err.response?.data || err.message);
-          toast.error("Authentication failed. Please try again.");
-          // Clean URL even on failure
-          window.history.replaceState({}, document.title, window.location.pathname);
-        } finally {
-          setIsVerifying(false);
-        }
-      };
-      verifyAndLogin();
-    } else if (isAuthenticated && !token && !isVerifying) {
+    if (isAuthenticated && !isVerifying) {
       console.log("User already authenticated, redirecting to dashboard...");
       router.push("/dashboard");
     }
-  }, [mounted, isAuthenticated, setCredentials, router, isVerifying]);
+  }, [mounted, isAuthenticated, router, isVerifying]);
 
   const features = [
     {
