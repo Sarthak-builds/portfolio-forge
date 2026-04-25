@@ -58,6 +58,22 @@ export function useRating() {
 
     const rateMutation = useMutation({
         mutationFn: ({ id, score }: { id: string; score: number }) => ratePortfolio({ id, score }),
+        onMutate: async ({ id, score }) => {
+            // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+            await queryClient.cancelQueries({ queryKey: ['portfolio-feed'] });
+
+            const currentCard = cards.find(c => c.id === id);
+            if (currentCard) {
+                // Optimistically update the store
+                updateCard(id, {
+                    userInteraction: {
+                        ...currentCard.userInteraction!,
+                        rating: score
+                    }
+                });
+            }
+            return { currentCard };
+        },
         onSuccess: (data: any, variables) => {
             const currentCard = cards.find(c => c.id === variables.id);
             if (currentCard) {
@@ -69,6 +85,7 @@ export function useRating() {
                     }
                 });
             }
+            // Silent refresh in background
             queryClient.invalidateQueries({ queryKey: ['portfolio-feed'] });
             toast.success("Successfully rated this masterpiece");
         },
@@ -80,12 +97,25 @@ export function useRating() {
 
     const likeMutation = useMutation({
         mutationFn: (id: string) => likePortfolio(id),
+        onMutate: async (id) => {
+            await queryClient.cancelQueries({ queryKey: ['portfolio-feed'] });
+            const currentCard = cards.find(c => c.id === id);
+            if (currentCard) {
+                const newLiked = !currentCard.userInteraction?.hasLiked;
+                updateCard(id, {
+                    userInteraction: {
+                        ...currentCard.userInteraction!,
+                        hasLiked: newLiked
+                    }
+                });
+            }
+            return { currentCard };
+        },
         onSuccess: (data: any, id) => {
             const currentCard = cards.find(c => c.id === id);
             if (currentCard) {
                 updateCard(id, {
                     score: data.score || currentCard.score,
-                    // If we had a likes count in the card object, we'd update it here
                     userInteraction: {
                         ...currentCard.userInteraction!,
                         hasLiked: data.liked
@@ -104,6 +134,20 @@ export function useRating() {
 
     const bookmarkMutation = useMutation({
         mutationFn: (id: string) => bookmarkPortfolio(id),
+        onMutate: async (id) => {
+            await queryClient.cancelQueries({ queryKey: ['portfolio-feed'] });
+            const currentCard = cards.find(c => c.id === id);
+            if (currentCard) {
+                const newBookmarked = !currentCard.userInteraction?.hasBookmarked;
+                updateCard(id, {
+                    userInteraction: {
+                        ...currentCard.userInteraction!,
+                        hasBookmarked: newBookmarked
+                    }
+                });
+            }
+            return { currentCard };
+        },
         onSuccess: (data: any, id) => {
             const currentCard = cards.find(c => c.id === id);
             if (currentCard) {

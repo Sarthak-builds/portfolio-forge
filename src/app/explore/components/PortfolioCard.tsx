@@ -46,11 +46,36 @@ export function PortfolioCard({ card, onLike, onBookmark, onRate, onNext, onPrev
 
     const addCommentMutation = useMutation({
         mutationFn: (content: string) => commentPortfolio({ id: card.id, content }),
+        onMutate: async (content) => {
+            await queryClient.cancelQueries({ queryKey: ["comments", card.id] });
+            const previousComments = queryClient.getQueryData(["comments", card.id]);
+            
+            if (currentUser) {
+                const optimisticComment = {
+                    id: Math.random().toString(),
+                    content,
+                    createdAt: new Date().toISOString(),
+                    user: {
+                        name: currentUser.name,
+                        avatarUrl: currentUser.avatarUrl
+                    }
+                };
+                queryClient.setQueryData(["comments", card.id], (old: any) => [optimisticComment, ...(old || [])]);
+            }
+            
+            return { previousComments };
+        },
         onSuccess: () => {
             refetchComments();
             setNewComment("");
             toast.success("Comment posted");
         },
+        onError: (err, content, context: any) => {
+            if (context?.previousComments) {
+                queryClient.setQueryData(["comments", card.id], context.previousComments);
+            }
+            toast.error("Failed to post comment");
+        }
     });
 
     const scrollToComments = () => {
@@ -80,9 +105,9 @@ export function PortfolioCard({ card, onLike, onBookmark, onRate, onNext, onPrev
                             e.preventDefault();
                             onPrev();
                         }}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-all active:scale-90 shadow-2xl backdrop-blur-xl border border-white/10 opacity-0 group-hover:opacity-100"
+                        className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-50 p-2 md:p-3 rounded-full bg-black/60 hover:bg-black/80 text-white transition-all active:scale-90 shadow-2xl backdrop-blur-xl border border-white/10 opacity-100 md:opacity-0 md:group-hover:opacity-100"
                     >
-                        <ChevronLeft className="w-5 h-5" />
+                        <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
                     </button>
                 )}
 
@@ -91,9 +116,10 @@ export function PortfolioCard({ card, onLike, onBookmark, onRate, onNext, onPrev
                         e.preventDefault();
                         onNext();
                     }}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-all active:scale-90 shadow-2xl backdrop-blur-xl border border-white/10 opacity-0 group-hover:opacity-100"
+                    className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-50 p-4 md:p-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white transition-all active:scale-95 shadow-[0_0_30px_rgba(16,185,129,0.4)] border border-emerald-400/20 group/next"
                 >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-7 h-7 md:w-8 md:h-8 group-hover:translate-x-0.5 transition-transform" />
+                    <span className="hidden md:block absolute -bottom-10 left-1/2 -translate-x-1/2 bg-emerald-600 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full opacity-0 group-hover/next:opacity-100 transition-opacity whitespace-nowrap">Next Preview</span>
                 </button>
 
                 {/* Overlay Links */}

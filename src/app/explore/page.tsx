@@ -6,6 +6,7 @@ import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { useExploreStore } from "@/store/useExploreStore";
 import { usePortfolioFeed, useRating } from "@/app/explore/hooks";
 import { useApi } from "@/lib/api/use-api";
+import { useQueryClient } from "@tanstack/react-query";
 import { PortfolioCard } from "@/app/explore/components/PortfolioCard";
 import { SkeletonCard } from "@/components/custom/SkeletonCard";
 import { EmptyState } from "@/components/custom/EmptyState";
@@ -59,6 +60,8 @@ function ExploreContent() {
         }
     }, [currentCard?.id, trackView, isAuthenticated]);
 
+    const queryClient = useQueryClient();
+    const { fetchComments } = useApi();
     const { isLoading, refetch } = usePortfolioFeed();
     const { rate, like, bookmark, isPending } = useRating();
 
@@ -69,6 +72,18 @@ function ExploreContent() {
             setCurrentIndex(shuffledCards.length);
         }
     };
+
+    // Prefetch next card's comments for speed
+    useEffect(() => {
+        const nextCard = shuffledCards[currentIndex + 1];
+        if (nextCard?.id) {
+            queryClient.prefetchQuery({
+                queryKey: ["comments", nextCard.id],
+                queryFn: () => fetchComments(nextCard.id),
+                staleTime: 5 * 60 * 1000,
+            });
+        }
+    }, [currentIndex, shuffledCards, queryClient, fetchComments]);
 
     const handlePrev = () => {
         if (currentIndex > 0) {
