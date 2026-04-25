@@ -12,7 +12,7 @@ import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 
 export default function DashboardPage() {
     const router = useRouter();
-    const { isAuthenticated, user } = useAuthStore();
+    const { isAuthenticated, user, hasHydrated } = useAuthStore();
     const {
         portfoliosLoading,
         currentPortfolio,
@@ -23,12 +23,12 @@ export default function DashboardPage() {
     } = useDashboard();
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (hasHydrated && !isAuthenticated) {
             router.push("/auth/sign-in");
         }
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated, router, hasHydrated]);
 
-    if (!isAuthenticated || portfoliosLoading) {
+    if (!hasHydrated || !isAuthenticated || portfoliosLoading) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-accent" />

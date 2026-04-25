@@ -12,25 +12,23 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 export default function BookmarkedPage() {
-    const { isAuthenticated } = useAuthStore();
+    const { isAuthenticated, hasHydrated } = useAuthStore();
     const { fetchBookmarks } = useApi();
     const router = useRouter();
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (hasHydrated && !isAuthenticated) {
             router.push("/auth/sign-in");
         }
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated, router, hasHydrated]);
 
     const { data: bookmarks = [], isLoading } = useQuery({
         queryKey: ['bookmarked-portfolios'],
         queryFn: fetchBookmarks,
-        enabled: isAuthenticated,
+        enabled: isAuthenticated && hasHydrated,
     });
 
-    if (!isAuthenticated) return null;
-
-    if (isLoading) {
+    if (!hasHydrated || !isAuthenticated) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-accent" />

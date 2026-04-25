@@ -9,7 +9,7 @@ import { useApi } from "@/lib/api/use-api";
 import { PortfolioCard } from "@/app/explore/components/PortfolioCard";
 import { SkeletonCard } from "@/components/custom/SkeletonCard";
 import { EmptyState } from "@/components/custom/EmptyState";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Loader2 } from "lucide-react";
 
 function ExploreContent() {
     const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -133,14 +133,22 @@ function ExploreContent() {
 }
 
 export default function ExplorePage() {
-    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+    const { isAuthenticated, hasHydrated } = useAuthStore();
     const router = useRouter();
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        if (hasHydrated && !isAuthenticated) {
             router.push("/auth/sign-in");
         }
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated, router, hasHydrated]);
+
+    if (!hasHydrated || !isAuthenticated) {
+        return (
+            <div className="flex h-[60vh] items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-accent" />
+            </div>
+        );
+    }
 
     return (
         <Suspense fallback={<div className="flex items-center justify-center h-screen"><SkeletonCard /></div>}>

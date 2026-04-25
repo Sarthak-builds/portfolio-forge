@@ -42,14 +42,14 @@ const formSchema = z.object({
 
 export function SignUpForm() {
   const { signUp, isLoading, error } = useSignUp();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, hasHydrated } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (hasHydrated && isAuthenticated) {
       router.push("/dashboard");
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, hasHydrated]);
 
 
   const form = useForm<z.infer<typeof formSchema>>({
