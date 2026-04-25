@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { apiClient } from "@/lib/api-client";
 
 export function AuthButton({ isMinimal = false }: { isMinimal?: boolean }) {
   const [mounted, setMounted] = useState(false);
