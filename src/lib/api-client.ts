@@ -2,8 +2,9 @@ import axios from "axios";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 
 const getBaseURL = () => {
-    const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    return url.endsWith('/') ? url : `${url}/`;
+    let url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    if (!url.endsWith('/')) url += '/';
+    return url + 'api';
 };
 
 export const apiClient = axios.create({

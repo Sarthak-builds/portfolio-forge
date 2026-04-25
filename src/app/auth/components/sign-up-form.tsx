@@ -202,8 +202,10 @@ export function SignUpForm() {
             variant="outline"
             type="button"
             className="w-full h-12 rounded-xl border-zinc-800 bg-transparent hover:bg-zinc-900 text-zinc-300 font-semibold transition-all group"
-          onClick={() => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+            onClick={() => {
+              const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+              const apiBase = baseUrl.endsWith('/') ? baseUrl + 'api' : baseUrl + '/api';
+              window.location.href = `${apiBase}/auth/google`;
             }}
           >
             <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
