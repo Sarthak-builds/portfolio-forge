@@ -11,7 +11,7 @@ import { useBookmarkStore } from "@/store/useBookmarkStore";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { cn } from "@/lib/utils";
 import { useState, useRef } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApi } from "@/lib/api/use-api";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -38,6 +38,8 @@ export function PortfolioCard({ card, onLike, onBookmark, onRate, onNext, onPrev
     const { fetchComments, commentPortfolio } = useApi();
     const { user: currentUser } = useAuthStore();
     const commentsRef = useRef<HTMLDivElement>(null);
+    const queryClient = useQueryClient();
+
 
     const { data: comments = [], refetch: refetchComments } = useQuery({
         queryKey: ["comments", card.id],

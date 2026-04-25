@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+
 export default function PrivacyPolicy() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
