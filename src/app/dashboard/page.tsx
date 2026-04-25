@@ -9,6 +9,8 @@ import { PortfolioForm } from "@/app/dashboard/components/PortfolioForm";
 import { useDashboard } from "@/app/dashboard/hooks/use-dashboard";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
+import { apiClient } from "@/lib/api-client";
+import { toast } from "sonner";
 
 export default function DashboardPage() {
     const router = useRouter();
