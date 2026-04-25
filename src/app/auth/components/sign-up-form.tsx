@@ -95,7 +95,7 @@ export function SignUpForm() {
                   <div className="relative group">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 group-focus-within:text-emerald-400 transition-colors" />
                     <Input 
-                      placeholder="John Doe" 
+                      placeholder="SpongeBob Squarepants" 
                       {...field} 
                       disabled={isLoading}
                       className="pl-10 h-11 bg-zinc-900/50 border-zinc-800 rounded-xl focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500/50 transition-all font-medium text-zinc-200"
@@ -117,7 +117,7 @@ export function SignUpForm() {
                   <div className="relative group">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 group-focus-within:text-emerald-400 transition-colors" />
                     <Input 
-                      placeholder="name@example.com" 
+                      placeholder="bob@gmail.com" 
                       {...field} 
                       disabled={isLoading}
                       className="pl-10 h-11 bg-zinc-900/50 border-zinc-800 rounded-xl focus-visible:ring-emerald-500/50 focus-visible:border-emerald-500/50 transition-all font-medium text-zinc-200"
