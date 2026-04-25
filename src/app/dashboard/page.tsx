@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2, Settings, ExternalLink, Activity, Layout, Eye } from "lucide-react";
 import { StatsOverview } from "@/app/dashboard/components/StatsOverview";
@@ -14,7 +14,8 @@ import { toast } from "sonner";
 
 export default function DashboardPage() {
     const router = useRouter();
-    const { isAuthenticated, user, hasHydrated, setCredentials } = useAuthStore();
+    const { isAuthenticated, user, setCredentials } = useAuthStore();
+    const [mounted, setMounted] = useState(false);
     const {
         portfoliosLoading,
         currentPortfolio,
@@ -24,9 +25,13 @@ export default function DashboardPage() {
         deletePortfolioMutation
     } = useDashboard();
 
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     // Handle OAuth Token from URL
     useEffect(() => {
-        if (!hasHydrated) return;
+        if (!mounted) return;
 
         const params = new URLSearchParams(window.location.search);
         const token = params.get('token');
@@ -50,9 +55,9 @@ export default function DashboardPage() {
         } else if (!isAuthenticated) {
             router.push("/auth/sign-in");
         }
-    }, [hasHydrated, isAuthenticated, setCredentials, router]);
+    }, [mounted, isAuthenticated, setCredentials, router]);
 
-    if (!hasHydrated || (!isAuthenticated && !new URLSearchParams(window.location.search).get('token')) || portfoliosLoading) {
+    if (!mounted || (!isAuthenticated && !new URLSearchParams(window.location.search).get('token')) || portfoliosLoading) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-accent" />

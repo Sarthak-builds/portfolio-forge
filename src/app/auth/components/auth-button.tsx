@@ -20,7 +20,12 @@ export function AuthButton({ isMinimal = false }: { isMinimal?: boolean }) {
 
   if (!mounted) return <div className="h-9 w-24" />;
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await apiClient.get("auth/logout");
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
     logout();
     router.push("/");
   };

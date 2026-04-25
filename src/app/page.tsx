@@ -40,7 +40,7 @@ import { apiClient } from "@/lib/api-client";
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, hasHydrated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const { scrollYProgress } = useScroll();
   const { theme, resolvedTheme } = useTheme();
   const router = useRouter();
@@ -67,11 +67,11 @@ export default function Home() {
 
   // Handle Auto-redirect for already logged-in users
   useEffect(() => {
-    if (mounted && hasHydrated && isAuthenticated) {
+    if (mounted && isAuthenticated) {
       console.log("Landing Page: Authenticated user detected, moving to dashboard...");
       router.push("/dashboard");
     }
-  }, [mounted, hasHydrated, isAuthenticated, router]);
+  }, [mounted, isAuthenticated, router]);
 
   const features = [
     {

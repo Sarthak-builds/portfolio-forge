@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { useApi } from "@/lib/api/use-api";
@@ -12,23 +12,28 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 export default function BookmarkedPage() {
-    const { isAuthenticated, hasHydrated } = useAuthStore();
+    const { isAuthenticated } = useAuthStore();
     const { fetchBookmarks } = useApi();
     const router = useRouter();
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        if (hasHydrated && !isAuthenticated) {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (mounted && !isAuthenticated) {
             router.push("/auth/sign-in");
         }
-    }, [isAuthenticated, router, hasHydrated]);
+    }, [isAuthenticated, router, mounted]);
 
     const { data: bookmarks = [], isLoading } = useQuery({
         queryKey: ['bookmarked-portfolios'],
         queryFn: fetchBookmarks,
-        enabled: isAuthenticated && hasHydrated,
+        enabled: isAuthenticated && mounted,
     });
 
-    if (!hasHydrated || !isAuthenticated) {
+    if (!mounted || !isAuthenticated) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-accent" />
