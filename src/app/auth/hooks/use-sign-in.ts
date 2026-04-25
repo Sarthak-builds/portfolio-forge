@@ -30,8 +30,9 @@ export function useSignIn() {
       // Store in Cookies for Middleware
       setCookie('token', token);
 
-      toast.success("Welcome back!");
-      router.push(redirectUrl || "/dashboard");
+      toast.success("Welcome!");
+      // Use window.location.href for a hard redirect to ensure cookies are fresh for middleware
+      window.location.href = redirectUrl || "/dashboard";
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || "Failed to sign in";
       setError(errorMessage);

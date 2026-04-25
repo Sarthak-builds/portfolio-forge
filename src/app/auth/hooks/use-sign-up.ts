@@ -38,7 +38,8 @@ export function useSignUp() {
       setCookie('token', token);
 
       toast.success("Account forged successfully!");
-      router.push(redirectUrl || "/dashboard");
+      // Use window.location.href for a hard redirect to ensure cookies are fresh for middleware
+      window.location.href = redirectUrl || "/dashboard";
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || "Failed to sign up";
       setError(errorMessage);

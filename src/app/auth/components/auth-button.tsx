@@ -32,7 +32,7 @@ export function AuthButton({ isMinimal = false }: { isMinimal?: boolean }) {
     deleteCookie('token');
     // Clear Zustand
     logout();
-    router.push("/");
+    window.location.href = "/";
   };
 
   if (isAuthenticated && user) {
