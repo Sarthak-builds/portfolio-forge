@@ -118,9 +118,9 @@ export function PortfolioCard({ card, onLike, onBookmark, onRate, onNext, onPrev
                         e.preventDefault();
                         onNext();
                     }}
-                    className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-50 p-4 md:p-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white transition-all active:scale-95 shadow-[0_0_30px_rgba(16,185,129,0.4)] border border-emerald-400/20 group/next"
+                    className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 z-50 p-2.5 md:p-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white transition-all active:scale-95 border border-emerald-400/20 group/next"
                 >
-                    <ChevronRight className="w-7 h-7 md:w-8 md:h-8 group-hover:translate-x-0.5 transition-transform" />
+                    <ChevronRight className="w-5 h-5 md:w-6 md:h-6 group-hover:translate-x-0.5 transition-transform" />
                     <span className="hidden md:block absolute -bottom-10 left-1/2 -translate-x-1/2 bg-emerald-600 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full opacity-0 group-hover/next:opacity-100 transition-opacity whitespace-nowrap">Next Preview</span>
                 </button>
 
