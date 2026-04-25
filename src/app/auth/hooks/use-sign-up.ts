@@ -29,10 +29,11 @@ export function useSignUp() {
       // Perform API call
       const res = await apiClient.post("auth/register", payload);
 
-      const { user, token } = res.data;
+      const { user, token, redirectUrl } = res.data;
       setCredentials(user, token);
 
-      router.push("/dashboard");
+      toast.success("Account forged successfully!");
+      router.push(redirectUrl || "/dashboard");
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || "Failed to sign up";
       setError(errorMessage);

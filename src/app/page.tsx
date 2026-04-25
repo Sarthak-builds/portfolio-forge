@@ -49,7 +49,6 @@ export default function Home() {
   const rotateX = useTransform(scrollYProgress, [0, 0.2], [20, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
-  const [isVerifying, setIsVerifying] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -68,13 +67,11 @@ export default function Home() {
 
   // Handle Auto-redirect for already logged-in users
   useEffect(() => {
-    if (!mounted || !hasHydrated || isVerifying) return;
-
-    if (isAuthenticated) {
-      console.log("User already authenticated, redirecting to dashboard...");
+    if (mounted && hasHydrated && isAuthenticated) {
+      console.log("Landing Page: Authenticated user detected, moving to dashboard...");
       router.push("/dashboard");
     }
-  }, [mounted, hasHydrated, isAuthenticated, router, isVerifying]);
+  }, [mounted, hasHydrated, isAuthenticated, router]);
 
   const features = [
     {

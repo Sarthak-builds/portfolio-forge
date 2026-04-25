@@ -22,10 +22,11 @@ export function useSignIn() {
       // Perform API call
       const res = await apiClient.post("auth/login", validatedData);
 
-      const { user, token } = res.data;
+      const { user, token, redirectUrl } = res.data;
       setCredentials(user, token);
 
-      router.push("/dashboard");
+      toast.success("Welcome back!");
+      router.push(redirectUrl || "/dashboard");
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || "Failed to sign in";
       setError(errorMessage);

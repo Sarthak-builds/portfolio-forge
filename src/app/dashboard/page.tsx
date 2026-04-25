@@ -12,7 +12,7 @@ import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 
 export default function DashboardPage() {
     const router = useRouter();
-    const { isAuthenticated, user, hasHydrated } = useAuthStore();
+    const { isAuthenticated, user, hasHydrated, setCredentials } = useAuthStore();
     const {
         portfoliosLoading,
         currentPortfolio,
@@ -22,13 +22,35 @@ export default function DashboardPage() {
         deletePortfolioMutation
     } = useDashboard();
 
+    // Handle OAuth Token from URL
     useEffect(() => {
-        if (hasHydrated && !isAuthenticated) {
+        if (!hasHydrated) return;
+
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+
+        if (token) {
+            const verifySession = async () => {
+                try {
+                    const res = await apiClient.get("auth/me", {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    setCredentials(res.data, token);
+                    // Clean URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    toast.success("Login successful via Google");
+                } catch (err) {
+                    console.error("Dashboard OAuth verification failed:", err);
+                    router.push("/auth/sign-in?error=oauth_failed");
+                }
+            };
+            verifySession();
+        } else if (!isAuthenticated) {
             router.push("/auth/sign-in");
         }
-    }, [isAuthenticated, router, hasHydrated]);
+    }, [hasHydrated, isAuthenticated, setCredentials, router]);
 
-    if (!hasHydrated || !isAuthenticated || portfoliosLoading) {
+    if (!hasHydrated || (!isAuthenticated && !new URLSearchParams(window.location.search).get('token')) || portfoliosLoading) {
         return (
             <div className="flex h-[60vh] items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-accent" />
