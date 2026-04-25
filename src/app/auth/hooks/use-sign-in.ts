@@ -20,7 +20,7 @@ export function useSignIn() {
       const validatedData = signInSchema.parse(data);
 
       // Perform API call
-      const res = await apiClient.post("/auth/login", validatedData);
+      const res = await apiClient.post("auth/login", validatedData);
 
       const { user, token } = res.data;
       setCredentials(user, token);

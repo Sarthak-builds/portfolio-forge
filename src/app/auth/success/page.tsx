@@ -14,7 +14,7 @@ export default function AuthSuccessPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await apiClient.get("/auth/me");
+        const res = await apiClient.get("auth/me");
         const user = res.data;
         // Token is in cookie, so we just need user info
         setCredentials(user, "cookie-based");

@@ -27,7 +27,7 @@ export function useSignUp() {
       };
 
       // Perform API call
-      const res = await apiClient.post("/auth/register", payload);
+      const res = await apiClient.post("auth/register", payload);
 
       const { user, token } = res.data;
       setCredentials(user, token);

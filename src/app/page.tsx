@@ -62,22 +62,29 @@ export default function Home() {
     if (token) {
       const verifyAndLogin = async () => {
         try {
-          // Temporarily set token in apiClient headers for this call
-          // or use the store since we're about to set it anyway
-          const res = await apiClient.get("/auth/me", {
+          // Verify token and get user profile
+          const res = await apiClient.get("auth/me", {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           });
           
           const user = res.data;
+          console.log("OAuth Login Success:", user);
+          
+          // Save credentials to store (local storage)
           setCredentials(user, token);
-          // Remove token from URL
+          
+          // Clean URL
           window.history.replaceState({}, document.title, window.location.pathname);
-          toast.success("Welcome to the Forge!");
-        } catch (err) {
-          console.error("OAuth Verification Failed:", err);
-          toast.error("Failed to verify Google account");
+          
+          toast.success("Welcome back, " + (user.name || "Architect") + "!");
+          
+          // Redirect to dashboard
+          router.push("/dashboard");
+        } catch (err: any) {
+          console.error("OAuth Verification Failed Detail:", err.response?.data || err.message);
+          toast.error("Authentication failed. Please try again.");
         }
       };
       verifyAndLogin();
