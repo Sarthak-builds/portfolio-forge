@@ -38,7 +38,7 @@ import { toast } from "sonner";
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated, setCredentials } = useAuthStore();
+  const { isAuthenticated, setCredentials, user } = useAuthStore();
   const { scrollYProgress } = useScroll();
   const { theme, resolvedTheme } = useTheme();
   const router = useRouter();
@@ -47,21 +47,28 @@ export default function Home() {
   const rotateX = useTransform(scrollYProgress, [0, 0.2], [20, 0]);
   const opacity = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
-    // Handle OAuth token from URL
+  // Handle OAuth Token and Auto-redirect
+  useEffect(() => {
+    if (!mounted) return;
+
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
 
-    if (token) {
+    if (token && !isVerifying) {
       const verifyAndLogin = async () => {
+        setIsVerifying(true);
         try {
+          console.log("Verifying token from URL...");
           // Verify token and get user profile
           const res = await apiClient.get("auth/me", {
             headers: {
@@ -69,29 +76,34 @@ export default function Home() {
             }
           });
           
-          const user = res.data;
-          console.log("OAuth Login Success:", user);
+          const userData = res.data;
+          console.log("OAuth Verification Success. User:", userData.email);
           
-          // Save credentials to store (local storage)
-          setCredentials(user, token);
+          // Save credentials to store (local storage via persist)
+          setCredentials(userData, token);
           
           // Clean URL
           window.history.replaceState({}, document.title, window.location.pathname);
           
-          toast.success("Welcome back, " + (user.name || "Architect") + "!");
+          toast.success(`Welcome back, ${userData.name || "Architect"}!`);
           
-          // Redirect to dashboard
+          // Redirect to dashboard after setting credentials
           router.push("/dashboard");
         } catch (err: any) {
           console.error("OAuth Verification Failed Detail:", err.response?.data || err.message);
           toast.error("Authentication failed. Please try again.");
+          // Clean URL even on failure
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } finally {
+          setIsVerifying(false);
         }
       };
       verifyAndLogin();
+    } else if (isAuthenticated && !token && !isVerifying) {
+      console.log("User already authenticated, redirecting to dashboard...");
+      router.push("/dashboard");
     }
-
-    return () => window.removeEventListener("resize", checkMobile);
-  }, [setCredentials]);
+  }, [mounted, isAuthenticated, setCredentials, router, isVerifying]);
 
   const features = [
     {
