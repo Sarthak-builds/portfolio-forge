@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { apiClient } from "@/lib/api-client";
+import { deleteCookie } from "@/utils/cookies";
 
 export function AuthButton({ isMinimal = false }: { isMinimal?: boolean }) {
   const [mounted, setMounted] = useState(false);
@@ -27,6 +28,9 @@ export function AuthButton({ isMinimal = false }: { isMinimal?: boolean }) {
     } catch (err) {
       console.error("Logout error:", err);
     }
+    // Clear cookie
+    deleteCookie('token');
+    // Clear Zustand
     logout();
     router.push("/");
   };

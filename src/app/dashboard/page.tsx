@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { apiClient } from "@/lib/api-client";
 import { toast } from "sonner";
+import { setCookie } from "@/utils/cookies";
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -42,7 +43,12 @@ export default function DashboardPage() {
                     const res = await apiClient.get("auth/me", {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
+                    
+                    // Store in Zustand
                     setCredentials(res.data, token);
+                    // Store in Cookies for Middleware
+                    setCookie('token', token);
+                    
                     // Clean URL
                     window.history.replaceState({}, document.title, window.location.pathname);
                     toast.success("Login successful via Google");
