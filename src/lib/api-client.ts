@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 
 export const apiClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/` : "http://localhost:8000/",
@@ -7,6 +8,18 @@ export const apiClient = axios.create({
     },
     withCredentials: true,
 });
+
+// Request interceptor to add token
+apiClient.interceptors.request.use(
+    (config) => {
+        const token = useAuthStore.getState().token;
+        if (token && token !== "cookie-based") {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
 // Response interceptor to handle standardized backend responses
 apiClient.interceptors.response.use(

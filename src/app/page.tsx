@@ -33,13 +33,15 @@ import {
 } from "@/components/ui/sheet";
 import { motion, useScroll, useTransform } from "motion/react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, setCredentials } = useAuthStore();
   const { scrollYProgress } = useScroll();
   const { theme, resolvedTheme } = useTheme();
+  const router = useRouter();
   
   const scale = useTransform(scrollYProgress, [0, 0.2], [0.9, 1]);
   const rotateX = useTransform(scrollYProgress, [0, 0.2], [20, 0]);
@@ -52,8 +54,37 @@ export default function Home() {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener("resize", checkMobile);
+
+    // Handle OAuth token from URL
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    if (token) {
+      const verifyAndLogin = async () => {
+        try {
+          // Temporarily set token in apiClient headers for this call
+          // or use the store since we're about to set it anyway
+          const res = await apiClient.get("/auth/me", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          const user = res.data;
+          setCredentials(user, token);
+          // Remove token from URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+          toast.success("Welcome to the Forge!");
+        } catch (err) {
+          console.error("OAuth Verification Failed:", err);
+          toast.error("Failed to verify Google account");
+        }
+      };
+      verifyAndLogin();
+    }
+
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  }, [setCredentials]);
 
   const features = [
     {
