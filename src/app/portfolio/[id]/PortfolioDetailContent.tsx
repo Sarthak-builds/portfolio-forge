@@ -88,15 +88,15 @@ export default function PortfolioDetailContent() {
     if (isLoading) {
         return (
             <div className="flex flex-col min-h-screen">
-                <div className="w-full h-[80vh] p-4">
-                    <Skeleton className="w-full h-full rounded-3xl bg-muted/50" />
+                <div className="w-full h-[80vh] p-2 md:p-4">
+                    <Skeleton className="w-full h-full rounded-2xl md:rounded-[2.5rem] bg-muted/50" />
                 </div>
-                <div className="max-w-5xl mx-auto w-full p-8 space-y-8">
+                <div className="max-w-5xl mx-auto w-full p-6 md:p-12 space-y-8">
                     <div className="flex items-center gap-4">
-                        <Skeleton className="w-12 h-12 rounded-full bg-muted" />
+                        <Skeleton className="w-10 h-10 rounded-full bg-muted" />
                         <div className="space-y-2">
-                            <Skeleton className="w-32 h-4 bg-muted" />
                             <Skeleton className="w-24 h-3 bg-muted" />
+                            <Skeleton className="w-32 h-4 bg-muted" />
                         </div>
                     </div>
                     <Skeleton className="w-full h-32 bg-muted rounded-2xl" />
@@ -108,117 +108,122 @@ export default function PortfolioDetailContent() {
     if (!portfolio) return null;
 
     return (
-        <div className="flex flex-col min-h-screen pb-20">
-            {/* Main Stage - 80% Height */}
-            <div className="w-full h-[80vh] relative group/stage p-2 lg:p-4">
+        <div className="flex flex-col min-h-screen pb-20 overflow-x-hidden">
+            {/* Cinematic Stage - 80% Height */}
+            <div className="w-full h-[80vh] relative group/stage p-2 md:p-4">
                 <Button 
                     variant="ghost" 
                     onClick={() => router.back()}
-                    className="absolute top-6 left-6 z-50 rounded-full bg-background/40 backdrop-blur-xl border border-border text-foreground hover:bg-muted active:scale-95 transition-all lg:opacity-0 group-hover/stage:opacity-100"
+                    className="absolute top-4 left-4 md:top-8 md:left-8 z-50 rounded-full bg-background/40 backdrop-blur-xl border border-border text-foreground hover:bg-muted active:scale-95 transition-all lg:opacity-0 group-hover/stage:opacity-100 h-9 px-4"
                 >
-                    <ChevronLeft className="w-5 h-5 mr-1" />
-                    Back
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">Return</span>
                 </Button>
                 
-                <div className="w-full h-full rounded-2xl lg:rounded-[2.5rem] overflow-hidden border border-border/50 shadow-2xl bg-card">
+                <div className="w-full h-full rounded-xl md:rounded-[2rem] overflow-hidden border border-border shadow-2xl bg-card">
                     <IframeViewer url={portfolio.liveUrl || portfolio.url} title={portfolio.name || portfolio.title} />
                 </div>
             </div>
 
-            {/* Content Section - Below Preview */}
-            <div className="max-w-6xl mx-auto w-full px-6 lg:px-8 py-12 space-y-16">
-                {/* Header & Main Info */}
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
-                    <div className="space-y-6 flex-1">
+            {/* Optimized Content Section */}
+            <div className="max-w-6xl mx-auto w-full px-4 md:px-8 py-8 md:py-16 space-y-12 md:space-y-20">
+                
+                {/* 1. Header & Quick Info */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-8 border-b border-border/50">
+                    <div className="space-y-4 flex-1">
                         <div className="space-y-2">
-                            <h1 className="text-4xl lg:text-6xl font-black text-foreground tracking-tighter leading-none">
+                            <h1 className="text-3xl md:text-5xl font-black text-foreground tracking-tighter leading-[0.9]">
                                 {portfolio.name || portfolio.title}
                             </h1>
                             <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-2 text-[10px] font-black text-accent uppercase tracking-[0.2em]">
+                                <div className="flex items-center gap-1.5 text-[9px] font-black text-accent uppercase tracking-widest">
                                     <Globe className="w-3 h-3" />
                                     Deployment Active
                                 </div>
                                 <div className="h-1 w-1 rounded-full bg-border" />
-                                <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
+                                <div className="flex items-center gap-1.5 text-[9px] font-black text-muted-foreground uppercase tracking-widest">
                                     <Calendar className="w-3 h-3" />
                                     Forged {portfolio.created_at ? format(new Date(portfolio.created_at), 'MMM yyyy') : 'Recently'}
                                 </div>
                             </div>
                         </div>
 
-                        <p className="text-lg lg:text-xl text-foreground/70 leading-relaxed font-medium max-w-3xl">
+                        <p className="text-sm md:text-base text-foreground/60 leading-relaxed font-medium max-w-2xl italic">
                             {portfolio.description}
                         </p>
 
-                        <div className="flex flex-wrap gap-2 pt-2">
-                            {(portfolio.stack || portfolio.tech_stack || [])?.map((tech: string) => (
-                                <Badge key={tech} variant="secondary" className="bg-muted text-muted-foreground border-border text-[10px] font-bold uppercase tracking-widest px-3 py-1">
-                                    #{tech}
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                            {(portfolio.stack || portfolio.tech_stack || [])?.map((tag: string) => (
+                                <Badge key={tag} variant="secondary" className="bg-muted/50 text-muted-foreground border-border text-[8px] font-black uppercase tracking-widest px-2 py-0.5">
+                                    #{tag}
                                 </Badge>
                             ))}
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-4 min-w-[240px]">
-                        <div className="flex items-center justify-between p-4 rounded-2xl bg-muted/30 border border-border">
-                            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Global Rank</p>
-                            <p className="text-xl font-black text-foreground tracking-tighter">#{portfolio.rank || "???"}</p>
+                    {/* Integrated Stats Card */}
+                    <div className="flex items-center gap-2 bg-muted/20 p-1.5 rounded-2xl border border-border self-start md:self-auto">
+                        <div className="px-4 py-2 rounded-xl bg-card border border-border/50 shadow-sm text-center min-w-[100px]">
+                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">Global Rank</p>
+                            <p className="text-lg font-black text-foreground tracking-tighter leading-none">#{portfolio.rank || "???"}</p>
                         </div>
-                        <div className="p-4 rounded-2xl bg-accent/5 border border-accent/20 flex items-center justify-between">
-                            <p className="text-[10px] font-black text-accent uppercase tracking-widest">Forge Score</p>
-                            <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 text-accent fill-accent" />
-                                <p className="text-xl font-black text-accent tracking-tighter">{portfolio.score?.toFixed(1) || "0.0"}</p>
+                        <div className="px-4 py-2 rounded-xl bg-accent/10 border border-accent/20 text-center min-w-[100px]">
+                            <p className="text-[8px] font-black text-accent uppercase tracking-widest mb-1">Forge Score</p>
+                            <div className="flex items-center justify-center gap-1 leading-none">
+                                <Star className="w-3 h-3 text-accent fill-accent" />
+                                <p className="text-lg font-black text-accent tracking-tighter">{portfolio.score?.toFixed(1) || "0.0"}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Creator Card & Stats */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-                    <a href={`/profile/${portfolio.user?.id}`} className="flex items-center gap-5 p-6 rounded-[2rem] bg-card border border-border hover:bg-muted/30 transition-all group">
-                        <UserAvatar name={portfolio.user?.name} image={portfolio.user?.avatarUrl} size="lg" />
+                {/* 2. Engagement Grid & Architect */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-stretch">
+                    <a href={`/profile/${portfolio.user?.id}`} className="md:col-span-1 flex items-center gap-3 p-4 rounded-3xl bg-card border border-border hover:bg-muted/30 transition-all group">
+                        <UserAvatar name={portfolio.user?.name} image={portfolio.user?.avatarUrl} size="md" />
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">Architect</p>
-                            <p className="text-xl font-black text-foreground tracking-tight truncate">{portfolio.user?.name}</p>
+                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest leading-none mb-1">Architect</p>
+                            <p className="text-sm font-black text-foreground tracking-tight truncate leading-none">{portfolio.user?.name}</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <ChevronLeft className="w-5 h-5 text-muted-foreground rotate-180" />
-                        </div>
+                        <ChevronLeft className="w-3 h-3 text-muted-foreground rotate-180 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </a>
 
-                    <div className="lg:col-span-2 grid grid-cols-3 gap-4">
-                        <div className="p-6 rounded-[2rem] bg-muted/20 border border-border flex flex-col justify-center items-center text-center space-y-1">
-                            <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                                <Eye className="w-4 h-4" />
+                    <div className="md:col-span-3 grid grid-cols-3 gap-3">
+                        <div className="p-4 rounded-3xl bg-muted/10 border border-border/50 flex flex-col justify-center items-center text-center space-y-1">
+                            <div className="flex items-center gap-1.5 text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                                <Eye className="w-3 h-3" />
                                 Reach
                             </div>
-                            <p className="text-3xl font-black text-foreground tracking-tighter">{portfolio.views || 0}</p>
+                            <p className="text-xl font-black text-foreground tracking-tighter leading-none">{portfolio.views || 0}</p>
                         </div>
-                        <div className="p-6 rounded-[2rem] bg-muted/20 border border-border flex flex-col justify-center items-center text-center space-y-1">
-                            <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                                <Heart className="w-4 h-4 text-red-500" />
+                        <div className="p-4 rounded-3xl bg-muted/10 border border-border/50 flex flex-col justify-center items-center text-center space-y-1">
+                            <div className="flex items-center gap-1.5 text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                                <Heart className="w-3 h-3 text-red-500" />
                                 Likes
                             </div>
-                            <p className="text-3xl font-black text-foreground tracking-tighter">{portfolio.likes ?? portfolio._count?.likes ?? 0}</p>
+                            <p className="text-xl font-black text-foreground tracking-tighter leading-none">{portfolio.likes ?? portfolio._count?.likes ?? 0}</p>
                         </div>
-                        <div className="p-6 rounded-[2rem] bg-muted/20 border border-border flex flex-col justify-center items-center text-center space-y-1">
-                            <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                                <Bookmark className="w-4 h-4 text-amber-500" />
+                        <div className="p-4 rounded-3xl bg-muted/10 border border-border/50 flex flex-col justify-center items-center text-center space-y-1">
+                            <div className="flex items-center gap-1.5 text-[8px] font-black text-muted-foreground uppercase tracking-widest">
+                                <Bookmark className="w-3 h-3 text-amber-500" />
                                 Saved
                             </div>
-                            <p className="text-3xl font-black text-foreground tracking-tighter">{portfolio.bookmarks ?? portfolio._count?.bookmarks ?? 0}</p>
+                            <p className="text-xl font-black text-foreground tracking-tighter leading-none">{portfolio.bookmarks ?? portfolio._count?.bookmarks ?? 0}</p>
                         </div>
                     </div>
                 </div>
 
-                {/* Engagement Bar & Comments */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-8">
-                    {/* Left: Actions */}
-                    <div className="lg:col-span-4 space-y-8">
-                        <div className="p-8 rounded-[2.5rem] bg-card border border-border shadow-sm sticky top-24">
-                            <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-8">Forge Interaction</h3>
+                {/* 3. Community Feed & Actions */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
+                    
+                    {/* Interaction Bar */}
+                    <div className="lg:col-span-4 space-y-6">
+                        <div className="p-6 md:p-8 rounded-[2rem] bg-card border border-border shadow-sm lg:sticky lg:top-24 space-y-8">
+                            <div className="space-y-1">
+                                <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">The Forge Arena</h3>
+                                <p className="text-xs text-muted-foreground/60 font-medium">Rate the architecture, support the creator, and save this work to your archives.</p>
+                            </div>
+                            
                             <RatingActions 
                                 portfolioId={id as string}
                                 onDismiss={() => router.back()}
@@ -228,18 +233,18 @@ export default function PortfolioDetailContent() {
                                 isPending={rateMutation.isPending || likeMutation.isPending || bookmarkMutation.isPending}
                             />
                             
-                            <div className="mt-8 pt-8 border-t border-border flex flex-col gap-3">
+                            <div className="pt-6 border-t border-border flex flex-col gap-2">
                                 <a href={portfolio.liveUrl || portfolio.url} target="_blank" rel="noreferrer">
-                                    <Button className="w-full h-14 bg-foreground text-background hover:opacity-90 font-black text-sm rounded-2xl transition-all active:scale-95">
-                                        <Globe className="w-4 h-4 mr-2" />
+                                    <Button className="w-full h-11 bg-foreground text-background hover:opacity-90 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95 shadow-sm">
+                                        <Globe className="w-3.5 h-3.5 mr-2" />
                                         Launch Masterpiece
                                     </Button>
                                 </a>
                                 {(portfolio.githubUrl || portfolio.github_url) && (
                                     <a href={portfolio.githubUrl || portfolio.github_url} target="_blank" rel="noreferrer">
-                                        <Button variant="outline" className="w-full h-14 rounded-2xl border-border bg-muted/30 hover:bg-muted font-black text-sm transition-all active:scale-95">
-                                            <Github className="w-4 h-4 mr-2 text-foreground" />
-                                            Source Repository
+                                        <Button variant="outline" className="w-full h-11 rounded-xl border-border bg-muted/30 hover:bg-muted font-black text-[10px] uppercase tracking-widest transition-all active:scale-95">
+                                            <Github className="w-3.5 h-3.5 mr-2 text-foreground" />
+                                            Source Code
                                         </Button>
                                     </a>
                                 )}
@@ -247,55 +252,55 @@ export default function PortfolioDetailContent() {
                         </div>
                     </div>
 
-                    {/* Right: Community Feed */}
+                    {/* Community Feed */}
                     <div className="lg:col-span-8 space-y-8">
-                        <div className="flex items-center justify-between px-2">
-                            <h3 className="text-xl font-black text-foreground tracking-tighter flex items-center gap-3">
-                                <MessageSquare className="w-6 h-6 text-accent" />
+                        <div className="flex items-center justify-between px-1">
+                            <h3 className="text-lg font-black text-foreground tracking-tighter flex items-center gap-2">
+                                <MessageSquare className="w-5 h-5 text-accent" />
                                 Community Feed
-                                <span className="text-sm font-bold text-muted-foreground bg-muted px-3 py-1 rounded-full">{comments.length}</span>
+                                <span className="text-[10px] font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{comments.length}</span>
                             </h3>
                         </div>
 
-                        {/* Add Comment */}
+                        {/* Transmission Input */}
                         <form onSubmit={handleCommentSubmit} className="relative group">
                             <textarea
-                                placeholder="Forge a transmission..."
+                                placeholder="Transmit your feedback..."
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
-                                className="w-full min-h-[120px] bg-muted/20 border border-border rounded-[2rem] p-6 text-base focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all placeholder:text-muted-foreground/50 resize-none font-medium"
+                                className="w-full min-h-[100px] bg-muted/5 border border-border rounded-2xl p-4 text-xs md:text-sm focus:outline-none focus:ring-1 focus:ring-accent/40 transition-all placeholder:text-muted-foreground/40 resize-none font-medium leading-relaxed"
                             />
                             <Button 
                                 type="submit"
                                 disabled={!newComment.trim() || addCommentMutation.isPending}
-                                className="absolute right-4 bottom-4 h-12 px-8 bg-accent text-accent-foreground hover:bg-accent/90 rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95"
+                                className="absolute right-3 bottom-3 h-9 px-6 bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all active:scale-95 shadow-lg"
                             >
-                                <Sparkles className="w-4 h-4 mr-2" />
-                                Post
+                                <Sparkles className="w-3 h-3 mr-2" />
+                                Transmit
                             </Button>
                         </form>
 
-                        {/* Comments List */}
-                        <div className="space-y-6">
+                        {/* Transmissions List */}
+                        <div className="space-y-4">
                             {comments.length === 0 ? (
-                                <div className="text-center py-20 rounded-[3rem] border-2 border-dashed border-border bg-muted/5">
-                                    <MessageSquare className="w-12 h-12 text-muted-foreground/20 mx-auto mb-4" />
-                                    <p className="text-sm text-muted-foreground font-black uppercase tracking-[0.2em]">The feed is silent.</p>
+                                <div className="text-center py-16 rounded-[2rem] border border-dashed border-border bg-muted/5">
+                                    <MessageSquare className="w-8 h-8 text-muted-foreground/20 mx-auto mb-3" />
+                                    <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em]">Frequency Silent</p>
                                 </div>
                             ) : (
                                 comments.map((comment: any) => (
-                                    <div key={comment.id} className="flex gap-5 p-8 rounded-[2.5rem] bg-card border border-border group hover:border-accent/30 transition-all duration-500">
-                                        <UserAvatar name={comment.user?.name} image={comment.user?.avatarUrl} size="md" className="shrink-0" />
-                                        <div className="space-y-3 flex-1 min-w-0">
+                                    <div key={comment.id} className="flex gap-4 p-5 rounded-3xl bg-card border border-border/80 hover:border-accent/30 transition-all duration-300">
+                                        <UserAvatar name={comment.user?.name} image={comment.user?.avatarUrl} size="sm" className="shrink-0" />
+                                        <div className="space-y-2 flex-1 min-w-0">
                                             <div className="flex items-center justify-between gap-2">
                                                 <div className="space-y-0.5">
-                                                    <p className="text-sm font-black text-foreground tracking-tight">{comment.user?.name}</p>
-                                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                                    <p className="text-[11px] font-black text-foreground tracking-tight leading-none">{comment.user?.name}</p>
+                                                    <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest leading-none">
                                                         {comment.createdAt ? format(new Date(comment.createdAt), 'MMM d, yyyy') : 'Recently'}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <p className="text-base text-foreground/80 leading-relaxed font-medium">
+                                            <p className="text-xs text-foreground/70 leading-relaxed font-medium">
                                                 {comment.content}
                                             </p>
                                         </div>
