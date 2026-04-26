@@ -163,10 +163,7 @@ export default function PortfolioDetailContent() {
 
                     {/* Integrated Stats Card */}
                     <div className="flex items-center gap-2 bg-muted/20 p-1.5 rounded-2xl border border-border self-start md:self-auto">
-                        <div className="px-4 py-2 rounded-xl bg-card border border-border/50 shadow-sm text-center min-w-[100px]">
-                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">Global Rank</p>
-                            <p className="text-lg font-black text-foreground tracking-tighter leading-none">#{portfolio.rank || "???"}</p>
-                        </div>
+                       
                         <div className="px-4 py-2 rounded-xl bg-accent/10 border border-accent/20 text-center min-w-[100px]">
                             <p className="text-[8px] font-black text-accent uppercase tracking-widest mb-1">Forge Score</p>
                             <div className="flex items-center justify-center gap-1 leading-none">
@@ -233,22 +230,6 @@ export default function PortfolioDetailContent() {
                                 isPending={rateMutation.isPending || likeMutation.isPending || bookmarkMutation.isPending}
                             />
                             
-                            <div className="pt-6 border-t border-border flex flex-col gap-2">
-                                <a href={portfolio.liveUrl || portfolio.url} target="_blank" rel="noreferrer">
-                                    <Button className="w-full h-11 bg-foreground text-background hover:opacity-90 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all active:scale-95 shadow-sm">
-                                        <Globe className="w-3.5 h-3.5 mr-2" />
-                                        Launch Masterpiece
-                                    </Button>
-                                </a>
-                                {(portfolio.githubUrl || portfolio.github_url) && (
-                                    <a href={portfolio.githubUrl || portfolio.github_url} target="_blank" rel="noreferrer">
-                                        <Button variant="outline" className="w-full h-11 rounded-xl border-border bg-muted/30 hover:bg-muted font-black text-[10px] uppercase tracking-widest transition-all active:scale-95">
-                                            <Github className="w-3.5 h-3.5 mr-2 text-foreground" />
-                                            Source Code
-                                        </Button>
-                                    </a>
-                                )}
-                            </div>
                         </div>
                     </div>
 
@@ -263,29 +244,14 @@ export default function PortfolioDetailContent() {
                         </div>
 
                         {/* Transmission Input */}
-                        <form onSubmit={handleCommentSubmit} className="relative group">
-                            <textarea
-                                placeholder="Transmit your feedback..."
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
-                                className="w-full min-h-[100px] bg-muted/5 border border-border rounded-2xl p-4 text-xs md:text-sm focus:outline-none focus:ring-1 focus:ring-accent/40 transition-all placeholder:text-muted-foreground/40 resize-none font-medium leading-relaxed"
-                            />
-                            <Button 
-                                type="submit"
-                                disabled={!newComment.trim() || addCommentMutation.isPending}
-                                className="absolute right-3 bottom-3 h-9 px-6 bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all active:scale-95 shadow-lg"
-                            >
-                                <Sparkles className="w-3 h-3 mr-2" />
-                                Transmit
-                            </Button>
-                        </form>
+                       
 
                         {/* Transmissions List */}
                         <div className="space-y-4">
                             {comments.length === 0 ? (
                                 <div className="text-center py-16 rounded-[2rem] border border-dashed border-border bg-muted/5">
                                     <MessageSquare className="w-8 h-8 text-muted-foreground/20 mx-auto mb-3" />
-                                    <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em]">Frequency Silent</p>
+                                    <p className="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em]">No Comments</p>
                                 </div>
                             ) : (
                                 comments.map((comment: any) => (
