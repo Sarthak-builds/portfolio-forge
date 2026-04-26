@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
     ChevronLeft, 
-    ExternalLink, 
     Github, 
     Star, 
     Eye, 
@@ -32,8 +31,9 @@ export default function PortfolioDetailContent() {
     const { id } = useParams();
     const router = useRouter();
     const { fetchPortfolio, fetchComments, commentPortfolio, ratePortfolio, likePortfolio, bookmarkPortfolio } = useApi();
+    const [isCommentDrawerOpen, setIsCommentDrawerOpen] = useState(false);
 
-    const { data: portfolio, isLoading } = useQuery({
+    const { data: portfolio, isLoading, refetch: refetchPortfolio } = useQuery({
         queryKey: ["portfolio", id],
         queryFn: () => fetchPortfolio(id as string),
         enabled: !!id,
@@ -49,6 +49,7 @@ export default function PortfolioDetailContent() {
         mutationFn: (content: string) => commentPortfolio({ id: id as string, content }),
         onSuccess: () => {
             refetchComments();
+            refetchPortfolio();
             toast.success("Comment posted");
         },
     });
@@ -56,6 +57,7 @@ export default function PortfolioDetailContent() {
     const rateMutation = useMutation({
         mutationFn: (score: number) => ratePortfolio({ id: id as string, score }),
         onSuccess: () => {
+            refetchPortfolio();
             toast.success("Rating submitted");
         },
     });
@@ -63,6 +65,7 @@ export default function PortfolioDetailContent() {
     const likeMutation = useMutation({
         mutationFn: () => likePortfolio(id as string),
         onSuccess: (data) => {
+            refetchPortfolio();
             toast.success(data.liked ? "Liked successfully" : "Like removed");
         },
     });
@@ -70,17 +73,18 @@ export default function PortfolioDetailContent() {
     const bookmarkMutation = useMutation({
         mutationFn: () => bookmarkPortfolio(id as string),
         onSuccess: (data) => {
+            refetchPortfolio();
             toast.success(data.bookmarked ? "Bookmarked successfully" : "Bookmark removed");
         },
     });
 
     if (isLoading) {
         return (
-            <div className="flex h-[90vh] bg-background">
-                <div className="flex-1 p-8">
-                    <Skeleton className="w-full h-full rounded-3xl bg-muted/50" />
+            <div className="flex flex-col lg:flex-row h-[90vh] bg-background">
+                <div className="flex-1 p-4 lg:p-8">
+                    <Skeleton className="w-full h-full rounded-2xl lg:rounded-3xl bg-muted/50" />
                 </div>
-                <div className="w-96 p-8 border-l border-border space-y-8">
+                <div className="w-full lg:w-96 p-4 lg:p-8 border-t lg:border-t-0 lg:border-l border-border space-y-8">
                     <div className="flex items-center gap-4">
                         <Skeleton className="w-12 h-12 rounded-full bg-muted" />
                         <div className="space-y-2">
@@ -100,30 +104,30 @@ export default function PortfolioDetailContent() {
     return (
         <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)] bg-background overflow-hidden">
             {/* Main Stage */}
-            <div className="flex-1 relative bg-muted/20 group/stage p-4 lg:p-6 overflow-hidden">
+            <div className="flex-1 relative bg-muted/10 group/stage p-2 lg:p-6 overflow-hidden">
                 <Button 
                     variant="ghost" 
                     onClick={() => router.back()}
-                    className="absolute top-8 left-8 z-50 rounded-full bg-background/40 backdrop-blur-xl border border-border text-foreground hover:bg-muted active:scale-95 transition-all opacity-0 group-hover/stage:opacity-100"
+                    className="absolute top-4 left-4 lg:top-8 lg:left-8 z-50 rounded-full bg-background/40 backdrop-blur-xl border border-border text-foreground hover:bg-muted active:scale-95 transition-all lg:opacity-0 group-hover/stage:opacity-100"
                 >
                     <ChevronLeft className="w-5 h-5 mr-1" />
                     Back
                 </Button>
                 
-                <div className="w-full h-full rounded-2xl lg:rounded-3xl overflow-hidden border border-border shadow-2xl">
+                <div className="w-full h-full rounded-xl lg:rounded-3xl overflow-hidden border border-border shadow-2xl bg-card">
                     <IframeViewer url={portfolio.url} title={portfolio.title} />
                 </div>
             </div>
 
             {/* Side Panel */}
-            <div className="w-full lg:w-[400px] border-l border-border bg-card flex flex-col shrink-0">
+            <div className="w-full lg:w-[400px] border-t lg:border-t-0 lg:border-l border-border bg-card flex flex-col shrink-0 h-[50vh] lg:h-full">
                 <ScrollArea className="flex-1">
-                    <div className="p-8 space-y-10">
+                    <div className="p-6 lg:p-8 space-y-8 lg:space-y-10">
                         {/* Header & Creator */}
                         <div className="space-y-6">
                             <div className="flex items-start justify-between gap-4">
                                 <div className="space-y-1">
-                                    <h1 className="text-3xl font-black text-foreground tracking-tighter leading-tight">
+                                    <h1 className="text-2xl lg:text-3xl font-black text-foreground tracking-tighter leading-tight">
                                         {portfolio.title}
                                     </h1>
                                     <div className="flex items-center gap-2 text-[10px] font-black text-accent uppercase tracking-widest">
@@ -133,7 +137,7 @@ export default function PortfolioDetailContent() {
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
                                     <StatsBadge icon={Star} count={portfolio.score?.toFixed(1) || "0.0"} variant="amber" />
-                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Global Rank: #12</p>
+                                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Global Rank: #{portfolio.rank || "???"}</p>
                                 </div>
                             </div>
 
@@ -161,10 +165,27 @@ export default function PortfolioDetailContent() {
                             <div className="p-4 rounded-2xl bg-muted/30 border border-border space-y-1">
                                 <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                                     <Heart className="w-3 h-3 text-red-500" />
-                                    Love
+                                    Likes
                                 </div>
                                 <p className="text-xl font-black text-foreground tracking-tighter">{portfolio.likes || 0}</p>
                             </div>
+                            <div className="p-4 rounded-2xl bg-muted/30 border border-border space-y-1">
+                                <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                                    <Bookmark className="w-3 h-3 text-amber-500" />
+                                    Saved
+                                </div>
+                                <p className="text-xl font-black text-foreground tracking-tighter">{portfolio.bookmarks || 0}</p>
+                            </div>
+                            <button 
+                                onClick={() => setIsCommentDrawerOpen(true)}
+                                className="p-4 rounded-2xl bg-muted/30 border border-border space-y-1 text-left hover:bg-muted/50 transition-all group"
+                            >
+                                <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest group-hover:text-accent">
+                                    <MessageSquare className="w-3 h-3" />
+                                    Comments
+                                </div>
+                                <p className="text-xl font-black text-foreground tracking-tighter">{comments.length}</p>
+                            </button>
                         </div>
 
                         {/* Description */}
@@ -188,14 +209,14 @@ export default function PortfolioDetailContent() {
                         {/* Links */}
                         <div className="flex items-center gap-3">
                             <a href={portfolio.url} target="_blank" rel="noreferrer" className="flex-1">
-                                <Button className="w-full h-12 bg-foreground text-background hover:opacity-90 font-black text-sm rounded-xl">
+                                <Button className="w-full h-12 bg-foreground text-background hover:opacity-90 font-black text-sm rounded-xl transition-all active:scale-95">
                                     <Globe className="w-4 h-4 mr-2" />
                                     Project Site
                                 </Button>
                             </a>
                             {portfolio.github_url && (
                                 <a href={portfolio.github_url} target="_blank" rel="noreferrer">
-                                    <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-border bg-muted/50 hover:bg-muted">
+                                    <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-border bg-muted/50 hover:bg-muted active:scale-95 transition-all">
                                         <Github className="w-5 h-5 text-foreground" />
                                     </Button>
                                 </a>
@@ -203,7 +224,7 @@ export default function PortfolioDetailContent() {
                         </div>
 
                         {/* Meta */}
-                        <div className="pt-6 border-t border-border space-y-3">
+                        <div className="pt-6 border-t border-border space-y-3 pb-8">
                             <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                                 <div className="flex items-center gap-2">
                                     <Calendar className="w-3 h-3" />
@@ -219,7 +240,7 @@ export default function PortfolioDetailContent() {
                 <div className="p-6 border-t border-border bg-card/80 backdrop-blur-xl">
                     <RatingActions 
                         portfolioId={id as string}
-                        onDismiss={() => {}}
+                        onDismiss={() => router.back()}
                         onLike={() => likeMutation.mutate()}
                         onBookmark={() => bookmarkMutation.mutate()}
                         onRate={(score) => rateMutation.mutate(score)}
@@ -227,6 +248,15 @@ export default function PortfolioDetailContent() {
                     />
                 </div>
             </div>
+
+            <CommentDrawer 
+                isOpen={isCommentDrawerOpen}
+                onOpenChange={setIsCommentDrawerOpen}
+                portfolioId={id as string}
+                comments={comments}
+                onAddComment={(content) => addCommentMutation.mutate(content)}
+                isSubmitting={addCommentMutation.isPending}
+            />
         </div>
     );
 }

@@ -1,11 +1,12 @@
 "use client";
 
-import { Trophy, Loader2, Star, Sparkles, Filter } from "lucide-react";
+import { Trophy, Star, Sparkles } from "lucide-react";
 import { useLeaderboard } from "@/app/leaderboard/hooks";
 import { useLeaderboardStore } from "@/store/useLeaderboardStore";
 import { LeaderboardTable } from "@/app/leaderboard/components/LeaderboardTable";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LeaderboardFilter } from "@/app/leaderboard/lib/types";
 
 export default function LeaderboardPage() {
     const activeFilter = useLeaderboardStore((s) => s.activeFilter);
@@ -28,7 +29,7 @@ export default function LeaderboardPage() {
                 </div>
 
                 <div className="bg-muted/50 p-1 rounded-xl border border-border w-fit">
-                    <Tabs defaultValue={activeFilter} onValueChange={(v) => setActiveFilter(v as any)}>
+                    <Tabs defaultValue={activeFilter} onValueChange={(v) => setActiveFilter(v as LeaderboardFilter)}>
                         <TabsList className="bg-transparent border-none p-0 h-8 md:h-9">
                             <TabsTrigger value="all-time" className="rounded-lg font-bold data-[state=active]:bg-foreground data-[state=active]:text-background text-[10px] md:text-[11px] uppercase tracking-widest px-3 md:px-4 transition-all">All Time</TabsTrigger>
                             <TabsTrigger value="monthly" className="rounded-lg font-bold data-[state=active]:bg-foreground data-[state=active]:text-background text-[10px] md:text-[11px] uppercase tracking-widest px-3 md:px-4 transition-all">Monthly</TabsTrigger>
@@ -74,7 +75,7 @@ export default function LeaderboardPage() {
                         <Sparkles className="w-5 h-5 text-emerald-400" />
                     </div>
                     <h3 className="text-foreground font-bold tracking-tight">Verified Status</h3>
-                    <p className="text-[11px] md:text-xs text-muted-foreground font-medium leading-relaxed">Creators in the Top 100 automaticially qualify for 'Verified Contributor' status in the community.</p>
+                    <p className="text-[11px] md:text-xs text-muted-foreground font-medium leading-relaxed">Creators in the Top 100 automaticially qualify for &apos;Verified Contributor&apos; status in the community.</p>
                 </div>
             </div>
         </div>

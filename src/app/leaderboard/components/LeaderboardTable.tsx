@@ -8,11 +8,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Trophy, Medal, Star, Eye, Heart, MessageSquare, Globe, Compass } from "lucide-react";
+import { ExternalLink, Trophy, Medal, Star, Eye, Heart, MessageSquare, Compass } from "lucide-react";
 import { LeaderboardEntry } from "@/app/leaderboard/lib/types";
 import { UserAvatar } from "@/components/custom/UserAvatar";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 interface LeaderboardTableProps {
