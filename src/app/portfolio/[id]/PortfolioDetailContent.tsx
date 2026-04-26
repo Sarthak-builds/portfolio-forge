@@ -127,7 +127,7 @@ export default function PortfolioDetailContent() {
             </div>
 
             {/* Side Panel */}
-            <div className="w-full lg:w-[450px] border-t lg:border-t-0 lg:border-l border-border bg-card flex flex-col shrink-0 h-[60vh] lg:h-full">
+            <div className="w-full lg:w-[450px] border-t lg:border-t-0 lg:border-l border-border bg-card flex flex-col shrink-0 h-[60vh] lg:h-full rounded-lg">
                 <ScrollArea className="flex-1">
                     <div className="p-6 lg:p-8 space-y-8 lg:space-y-10">
                         {/* Header & Creator */}
