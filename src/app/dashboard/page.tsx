@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Settings, ExternalLink, Activity, Layout, Eye } from "lucide-react";
+import { Loader2, ExternalLink, Activity, Layout, Eye, Sparkles } from "lucide-react";
 import { StatsOverview } from "@/app/dashboard/components/StatsOverview";
 import { PortfolioForm } from "@/app/dashboard/components/PortfolioForm";
 import { useDashboard } from "@/app/dashboard/hooks/use-dashboard";
@@ -15,7 +15,7 @@ import { setCookie } from "@/utils/cookies";
 
 export default function DashboardPage() {
     const router = useRouter();
-    const { isAuthenticated, user, setCredentials } = useAuthStore();
+    const { isAuthenticated, setCredentials } = useAuthStore();
     const [mounted, setMounted] = useState(false);
     const {
         portfoliosLoading,
@@ -27,6 +27,7 @@ export default function DashboardPage() {
     } = useDashboard();
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
     }, []);
 
@@ -86,10 +87,16 @@ export default function DashboardPage() {
                 {currentPortfolio && (
                     <div className="flex items-center gap-3">
                         <Link href={`/portfolio/${currentPortfolio.id}`}>
-                            {/* <Button className="h-10 px-6 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-sm border border-accent/20">
+                            <Button className="h-10 px-6 rounded-xl bg-accent/10 hover:bg-accent/20 text-accent font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-sm border border-accent/20">
                                 <Eye className="w-3.5 h-3.5 mr-2" />
                                 Public View
-                            </Button> */}
+                            </Button>
+                        </Link>
+                        <Link href={`/explore?id=${currentPortfolio.id}`}>
+                            <Button className="h-10 px-6 rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-sm">
+                                <Sparkles className="w-3.5 h-3.5 mr-2" />
+                                Forge View
+                            </Button>
                         </Link>
                         <a href={currentPortfolio.url} target="_blank" rel="noreferrer">
                             <Button className="h-10 px-6 rounded-xl bg-foreground text-background hover:opacity-90 font-black text-[10px] uppercase tracking-widest transition-all active:scale-95 shadow-sm">
