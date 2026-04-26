@@ -115,7 +115,7 @@ export default function PortfolioDetailContent() {
                 </Button>
                 
                 <div className="w-full h-full rounded-xl lg:rounded-3xl overflow-hidden border border-border shadow-2xl bg-card">
-                    <IframeViewer url={portfolio.url} title={portfolio.title} />
+                    <IframeViewer url={portfolio.liveUrl || portfolio.url} title={portfolio.name || portfolio.title} />
                 </div>
             </div>
 
@@ -128,7 +128,7 @@ export default function PortfolioDetailContent() {
                             <div className="flex items-start justify-between gap-4">
                                 <div className="space-y-1">
                                     <h1 className="text-2xl lg:text-3xl font-black text-foreground tracking-tighter leading-tight">
-                                        {portfolio.title}
+                                        {portfolio.name || portfolio.title}
                                     </h1>
                                     <div className="flex items-center gap-2 text-[10px] font-black text-accent uppercase tracking-widest">
                                         <Globe className="w-3 h-3" />
@@ -167,14 +167,14 @@ export default function PortfolioDetailContent() {
                                     <Heart className="w-3 h-3 text-red-500" />
                                     Likes
                                 </div>
-                                <p className="text-xl font-black text-foreground tracking-tighter">{portfolio.likes || 0}</p>
+                                <p className="text-xl font-black text-foreground tracking-tighter">{portfolio.likes ?? portfolio._count?.likes ?? 0}</p>
                             </div>
                             <div className="p-4 rounded-2xl bg-muted/30 border border-border space-y-1">
                                 <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                                     <Bookmark className="w-3 h-3 text-amber-500" />
                                     Saved
                                 </div>
-                                <p className="text-xl font-black text-foreground tracking-tighter">{portfolio.bookmarks || 0}</p>
+                                <p className="text-xl font-black text-foreground tracking-tighter">{portfolio.bookmarks ?? portfolio._count?.bookmarks ?? 0}</p>
                             </div>
                             <button 
                                 onClick={() => setIsCommentDrawerOpen(true)}
@@ -184,7 +184,7 @@ export default function PortfolioDetailContent() {
                                     <MessageSquare className="w-3 h-3" />
                                     Comments
                                 </div>
-                                <p className="text-xl font-black text-foreground tracking-tighter">{comments.length}</p>
+                                <p className="text-xl font-black text-foreground tracking-tighter">{portfolio._count?.comments ?? comments.length}</p>
                             </button>
                         </div>
 
@@ -198,7 +198,7 @@ export default function PortfolioDetailContent() {
                                 {portfolio.description}
                             </p>
                             <div className="flex flex-wrap gap-2 pt-2">
-                                {portfolio.tech_stack?.map((tech: string) => (
+                                {(portfolio.stack || portfolio.tech_stack || [])?.map((tech: string) => (
                                     <Badge key={tech} variant="secondary" className="bg-muted text-muted-foreground border-border text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5">
                                         {tech}
                                     </Badge>
@@ -208,14 +208,14 @@ export default function PortfolioDetailContent() {
 
                         {/* Links */}
                         <div className="flex items-center gap-3">
-                            <a href={portfolio.url} target="_blank" rel="noreferrer" className="flex-1">
+                            <a href={portfolio.liveUrl || portfolio.url} target="_blank" rel="noreferrer" className="flex-1">
                                 <Button className="w-full h-12 bg-foreground text-background hover:opacity-90 font-black text-sm rounded-xl transition-all active:scale-95">
                                     <Globe className="w-4 h-4 mr-2" />
                                     Project Site
                                 </Button>
                             </a>
-                            {portfolio.github_url && (
-                                <a href={portfolio.github_url} target="_blank" rel="noreferrer">
+                            {(portfolio.githubUrl || portfolio.github_url) && (
+                                <a href={portfolio.githubUrl || portfolio.github_url} target="_blank" rel="noreferrer">
                                     <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-border bg-muted/50 hover:bg-muted active:scale-95 transition-all">
                                         <Github className="w-5 h-5 text-foreground" />
                                     </Button>
@@ -224,15 +224,7 @@ export default function PortfolioDetailContent() {
                         </div>
 
                         {/* Meta */}
-                        <div className="pt-6 border-t border-border space-y-3 pb-8">
-                            <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                                <div className="flex items-center gap-2">
-                                    <Calendar className="w-3 h-3" />
-                                    Forged Date
-                                </div>
-                                <span className="text-foreground/60">{portfolio.created_at ? format(new Date(portfolio.created_at), 'MMM yyyy') : 'Recently'}</span>
-                            </div>
-                        </div>
+                        
                     </div>
                 </ScrollArea>
 
