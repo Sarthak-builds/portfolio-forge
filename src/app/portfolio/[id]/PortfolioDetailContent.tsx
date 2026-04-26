@@ -31,7 +31,7 @@ export default function PortfolioDetailContent() {
     const { id } = useParams();
     const router = useRouter();
     const { fetchPortfolio, fetchComments, commentPortfolio, ratePortfolio, likePortfolio, bookmarkPortfolio } = useApi();
-    const [isCommentDrawerOpen, setIsCommentDrawerOpen] = useState(false);
+    const [newComment, setNewComment] = useState("");
 
     const { data: portfolio, isLoading, refetch: refetchPortfolio } = useQuery({
         queryKey: ["portfolio", id],
@@ -48,11 +48,18 @@ export default function PortfolioDetailContent() {
     const addCommentMutation = useMutation({
         mutationFn: (content: string) => commentPortfolio({ id: id as string, content }),
         onSuccess: () => {
+            setNewComment("");
             refetchComments();
             refetchPortfolio();
             toast.success("Comment posted");
         },
     });
+
+    const handleCommentSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newComment.trim()) return;
+        addCommentMutation.mutate(newComment);
+    };
 
     const rateMutation = useMutation({
         mutationFn: (score: number) => ratePortfolio({ id: id as string, score }),
@@ -80,7 +87,7 @@ export default function PortfolioDetailContent() {
 
     if (isLoading) {
         return (
-            <div className="flex flex-col lg:flex-row h-[90vh] bg-background">
+            <div className="flex flex-col lg:flex-row h-[90vh]">
                 <div className="flex-1 p-4 lg:p-8">
                     <Skeleton className="w-full h-full rounded-2xl lg:rounded-3xl bg-muted/50" />
                 </div>
@@ -102,9 +109,9 @@ export default function PortfolioDetailContent() {
     if (!portfolio) return null;
 
     return (
-        <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)] bg-background overflow-hidden">
+        <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)] overflow-hidden">
             {/* Main Stage */}
-            <div className="flex-1 relative bg-muted/10 group/stage p-2 lg:p-6 overflow-hidden">
+            <div className="flex-1 relative group/stage p-2 lg:p-6 overflow-hidden">
                 <Button 
                     variant="ghost" 
                     onClick={() => router.back()}
@@ -120,7 +127,7 @@ export default function PortfolioDetailContent() {
             </div>
 
             {/* Side Panel */}
-            <div className="w-full lg:w-[400px] border-t lg:border-t-0 lg:border-l border-border bg-card flex flex-col shrink-0 h-[50vh] lg:h-full">
+            <div className="w-full lg:w-[450px] border-t lg:border-t-0 lg:border-l border-border bg-card flex flex-col shrink-0 h-[60vh] lg:h-full">
                 <ScrollArea className="flex-1">
                     <div className="p-6 lg:p-8 space-y-8 lg:space-y-10">
                         {/* Header & Creator */}
@@ -154,7 +161,7 @@ export default function PortfolioDetailContent() {
                         </div>
 
                         {/* Engagement Stats Grid */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-3 gap-3">
                             <div className="p-4 rounded-2xl bg-muted/30 border border-border space-y-1">
                                 <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                                     <Eye className="w-3 h-3" />
@@ -176,16 +183,6 @@ export default function PortfolioDetailContent() {
                                 </div>
                                 <p className="text-xl font-black text-foreground tracking-tighter">{portfolio.bookmarks ?? portfolio._count?.bookmarks ?? 0}</p>
                             </div>
-                            <button 
-                                onClick={() => setIsCommentDrawerOpen(true)}
-                                className="p-4 rounded-2xl bg-muted/30 border border-border space-y-1 text-left hover:bg-muted/50 transition-all group"
-                            >
-                                <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest group-hover:text-accent">
-                                    <MessageSquare className="w-3 h-3" />
-                                    Comments
-                                </div>
-                                <p className="text-xl font-black text-foreground tracking-tighter">{portfolio._count?.comments ?? comments.length}</p>
-                            </button>
                         </div>
 
                         {/* Description */}
@@ -206,25 +203,71 @@ export default function PortfolioDetailContent() {
                             </div>
                         </div>
 
-                        {/* Links */}
-                        <div className="flex items-center gap-3">
-                            <a href={portfolio.liveUrl || portfolio.url} target="_blank" rel="noreferrer" className="flex-1">
-                                <Button className="w-full h-12 bg-foreground text-background hover:opacity-90 font-black text-sm rounded-xl transition-all active:scale-95">
-                                    <Globe className="w-4 h-4 mr-2" />
-                                    Project Site
+                        {/* Comments Section */}
+                        <div className="space-y-6 pt-6 border-t border-border">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+                                    <MessageSquare className="w-3.5 h-3.5" />
+                                    Community Feed ({comments.length})
+                                </h3>
+                            </div>
+
+                            {/* Add Comment Input */}
+                            <form onSubmit={handleCommentSubmit} className="relative group">
+                                <input
+                                    type="text"
+                                    placeholder="Share your thoughts..."
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    className="w-full h-12 bg-muted/30 border border-border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent transition-all pr-12"
+                                />
+                                <Button 
+                                    type="submit"
+                                    disabled={!newComment.trim() || addCommentMutation.isPending}
+                                    size="icon"
+                                    className="absolute right-1.5 top-1.5 h-9 w-9 bg-accent hover:bg-accent/90 rounded-lg transition-all active:scale-95"
+                                >
+                                    <Globe className="w-4 h-4 rotate-90" />
                                 </Button>
-                            </a>
-                            {(portfolio.githubUrl || portfolio.github_url) && (
-                                <a href={portfolio.githubUrl || portfolio.github_url} target="_blank" rel="noreferrer">
-                                    <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-border bg-muted/50 hover:bg-muted active:scale-95 transition-all">
-                                        <Github className="w-5 h-5 text-foreground" />
-                                    </Button>
-                                </a>
-                            )}
+                            </form>
+
+                            {/* Comments List */}
+                            <div className="space-y-4">
+                                {comments.length === 0 ? (
+                                    <div className="text-center py-8 rounded-2xl border border-dashed border-border bg-muted/10">
+                                        <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">No transmissions yet.</p>
+                                    </div>
+                                ) : (
+                                    comments.map((comment: any) => (
+                                        <div key={comment.id} className="flex gap-3 p-4 rounded-2xl bg-muted/20 border border-border/50 group hover:bg-muted/30 transition-all">
+                                            <UserAvatar name={comment.user?.name} image={comment.user?.avatarUrl} size="sm" className="shrink-0" />
+                                            <div className="space-y-1 flex-1 min-w-0">
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <p className="text-xs font-black text-foreground tracking-tight truncate">{comment.user?.name}</p>
+                                                    <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter whitespace-nowrap">
+                                                        {comment.createdAt ? format(new Date(comment.createdAt), 'MMM d') : 'Recently'}
+                                                    </span>
+                                                </div>
+                                                <p className="text-xs text-foreground/80 leading-relaxed font-medium break-words italic">
+                                                    "{comment.content}"
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
                         </div>
 
                         {/* Meta */}
-                        
+                        <div className="pt-6 border-t border-border space-y-3 pb-8">
+                            <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="w-3 h-3" />
+                                    Forged Date
+                                </div>
+                                <span className="text-foreground/60">{portfolio.created_at ? format(new Date(portfolio.created_at), 'MMM yyyy') : 'Recently'}</span>
+                            </div>
+                        </div>
                     </div>
                 </ScrollArea>
 
@@ -240,15 +283,6 @@ export default function PortfolioDetailContent() {
                     />
                 </div>
             </div>
-
-            <CommentDrawer 
-                isOpen={isCommentDrawerOpen}
-                onOpenChange={setIsCommentDrawerOpen}
-                portfolioId={id as string}
-                comments={comments}
-                onAddComment={(content) => addCommentMutation.mutate(content)}
-                isSubmitting={addCommentMutation.isPending}
-            />
         </div>
     );
 }
