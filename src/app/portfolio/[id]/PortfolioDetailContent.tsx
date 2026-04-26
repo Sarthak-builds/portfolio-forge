@@ -214,24 +214,7 @@ export default function PortfolioDetailContent() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
                     
                     {/* Interaction Bar */}
-                    <div className="lg:col-span-4 space-y-6">
-                        <div className="p-6 md:p-8 rounded-[2rem] bg-card border border-border shadow-sm lg:sticky lg:top-24 space-y-8">
-                            <div className="space-y-1">
-                                <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">The Forge Arena</h3>
-                                <p className="text-xs text-muted-foreground/60 font-medium">Rate the architecture, support the creator, and save this work to your archives.</p>
-                            </div>
-                            
-                            <RatingActions 
-                                portfolioId={id as string}
-                                onDismiss={() => router.back()}
-                                onLike={() => likeMutation.mutate()}
-                                onBookmark={() => bookmarkMutation.mutate()}
-                                onRate={(score) => rateMutation.mutate(score)}
-                                isPending={rateMutation.isPending || likeMutation.isPending || bookmarkMutation.isPending}
-                            />
-                            
-                        </div>
-                    </div>
+                  
 
                     {/* Community Feed */}
                     <div className="lg:col-span-8 space-y-8">
