@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { toast } from "sonner";
-
+import { useState } from "react";
 export default function PortfolioDetailContent() {
     const { id } = useParams();
     const router = useRouter();
