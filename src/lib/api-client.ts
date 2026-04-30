@@ -1,10 +1,23 @@
 import axios from "axios";
 import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 
-const getBaseURL = () => {
+export const getBaseURL = () => {
     let url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-    if (!url.endsWith('/')) url += '/';
-    return url + 'api';
+    
+    // Ensure protocol
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+    }
+
+    // Remove trailing slash
+    url = url.replace(/\/$/, "");
+
+    // Add /api if not present
+    if (!url.endsWith('/api')) {
+        url += '/api';
+    }
+    
+    return url;
 };
 
 export const apiClient = axios.create({

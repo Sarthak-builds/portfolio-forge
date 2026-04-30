@@ -1,9 +1,9 @@
 import { Metadata } from 'next';
 import PortfolioDetailContent from './PortfolioDetailContent';
+import { getBaseURL } from '@/lib/api-client';
 
 async function getPortfolio(id: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-  const apiBase = baseUrl.endsWith('/') ? baseUrl + 'api' : baseUrl + '/api';
+  const apiBase = getBaseURL();
   
   try {
     const res = await fetch(`${apiBase}/portfolios/${id}`, { next: { revalidate: 3600 } });

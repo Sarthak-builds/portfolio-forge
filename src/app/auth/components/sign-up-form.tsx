@@ -1,9 +1,10 @@
 "use client";
 
-import { useSignUp } from "../../../app/auth/hooks/use-sign-up";
+import { useSignUp } from "@/app/auth/hooks/use-sign-up";
 import { useEffect } from "react";
-import { useAuthStore } from "../../../app/auth/lib/useAuthstore";
+import { useAuthStore } from "@/app/auth/lib/useAuthstore";
 import { useRouter } from "next/navigation";
+import { getBaseURL } from "@/lib/api-client";
 import { Loader2, ArrowRight, Mail, Lock, User } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -203,8 +204,7 @@ export function SignUpForm() {
             type="button"
             className="w-full h-12 rounded-xl border-zinc-800 bg-transparent hover:bg-zinc-900 text-zinc-300 font-semibold transition-all group"
             onClick={() => {
-              const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-              const apiBase = baseUrl.endsWith('/') ? baseUrl + 'api' : baseUrl + '/api';
+              const apiBase = getBaseURL();
               window.location.href = `${apiBase}/auth/google`;
             }}
           >
