@@ -1,33 +1,72 @@
+
+---
+
+# 2. Portfolio Forge
+
+This repository is substantially larger than the others, and its existing README already describes it as a portfolio analysis/generation system. 
+
+### README
+
+```md
 # Portfolio Forge
 
-A developer portfolio analysis and generation platform designed around structured evaluation of portfolio quality, presentation, and technical positioning.
+A developer tooling platform for building, analyzing, and presenting software portfolios through structured data and automated evaluation.
+
+## Overview
+
+Portfolio Forge treats a developer portfolio as a structured technical representation rather than a static collection of pages.
+
+The system is designed around the extraction, organization, and presentation of developer information, projects, skills, and technical work.
 
 ## System Architecture
 
-The application is structured around a frontend-driven product architecture with service integrations responsible for data processing and analysis.
+The application is organized around a frontend application layer with service integrations responsible for data processing and analysis.
 
-## Core Components
+The architecture emphasizes clear boundaries between:
 
-- Portfolio generation
-- Portfolio analysis
-- Developer profile representation
-- Structured project presentation
-- AI-assisted evaluation
-- Dynamic interface generation
+- Presentation
+- Application state
+- Data processing
+- External services
+- Portfolio representation
+
+## Core Systems
+
+### Portfolio Representation
+
+Models developer profiles, projects, technologies, and supporting information as structured application data.
+
+### Portfolio Generation
+
+Transforms structured information into a dynamically rendered portfolio interface.
+
+### Portfolio Analysis
+
+Evaluates portfolio content and presentation through structured analysis workflows.
+
+### AI-assisted Evaluation
+
+Uses automated analysis to provide additional signal around technical positioning and portfolio quality.
 
 ## Engineering Focus
 
-The project explores the intersection of developer tooling, web application architecture, and AI-assisted analysis.
+The project explores several application-level engineering problems:
 
-Key engineering considerations include:
-
-- Component reusability
-- Client-side state management
+- Dynamic interface generation
+- Structured data modeling
 - API abstraction
 - Asynchronous data flows
+- Client-side state management
+- Component reuse
 - Responsive rendering
-- Maintainable UI architecture
+- Separation of application and presentation logic
 
-## Objective
+## Design Principles
 
-The system is intended to reduce the friction involved in presenting technical work while providing structured feedback on how a developer's portfolio communicates their technical capabilities.
+The implementation favors composable components and explicit application boundaries over tightly coupled page-level logic.
+
+The objective is to make portfolio generation extensible enough to support different developer profiles without duplicating application logic.
+
+## Status
+
+Portfolio Forge is an ongoing product-oriented project focused on developer tooling and AI-assisted technical evaluation.
